@@ -5,7 +5,7 @@ alg = astra_logger
 alg.set_debugging(True)
 set_ticktock_log_func(None)
 
-print(alg.colorify("ASTRAPYTHON -- Wtf r u doing? Take ur fking eyes off :3"))
+print(alg.colorify("ASTRAPYTHON -- LALLAALLLALLALALAALLLALLLALLALLALLALLLALLAAA :3"))
 ticktock()
 
 from sage.all import *
