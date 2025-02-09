@@ -1,0 +1,176 @@
+#!/bin/bash
+
+__ASTRACODES=/mnt/d/astracodes
+__THIS_ASTRA_SCRIPT=~/.astra_scripts
+
+__ASTRAPYTHON=$__ASTRACODES/python
+
+
+
+
+echo Last modified: `date -r $__THIS_ASTRA_SCRIPT "+%Y-%m-%d %H:%M:%S"` @ $__THIS_ASTRA_SCRIPT
+
+__ASTRAHELP__ENTRIES=()
+
+astrahelp() {
+    local doc usage
+    if [ ! "$1" ]
+    then
+        echo -e "Help function for Astrageldon's script :3\n@ $__THIS_ASTRA_SCRIPT\n@ $__ASTRACODES"
+        echo
+        echo ${__ASTRAHELP__ENTRIES[@]}
+        return
+    fi
+    if [ "$(alias $1 2>/dev/null)" ]
+    then
+        alias $1
+        return
+    fi
+    doc=__ASTRAHELP__$1__DOC
+    usage=__ASTRAHELP__$1__USAGE
+    if [ ! "${!doc}" ]
+    then
+        echo "Doc not found: $1"
+    else
+        echo -e ${!doc}
+    fi
+    if [ ! "${!usage}" ]
+    then
+        echo "Usage not found: $1"
+    else
+        echo -e Usage: $1 ${!usage}
+    fi
+}
+
+__NEW_ALIAS() {
+    __ASTRAHELP__ENTRIES+=("$1")
+    echo -e "[\x1b[32;1m+\x1b[0m] Custom alias \"\x1b[1;30;1m$1\x1b[0m\": \"\x1b[33;1m$2\x1b[0m\""
+    alias $1="$2"
+}
+
+__NEW_FUNC() {
+    __ASTRAHELP__ENTRIES+=("$1")
+    export __ASTRAHELP__$1__DOC="$2"
+    export __ASTRAHELP__$1__USAGE="$3"
+    echo -e "[\x1b[32;1m+\x1b[0m] Custom func \"\x1b[1;30;1m$1\x1b[0m\": $2 (\x1b[33;1m$1 $3\x1b[0m)"
+}
+
+__NEW_FUNC astrahelp "Help function for Astrageldon's script :3" "[something]"
+
+__NEW_ALIAS gitdiff "git diff --no-index --word-diff=color --word-diff-regex=."
+
+__NEW_ALIAS dockerpsimg "sudo docker ps && sudo docker images"
+
+dockerrmrmi() {
+    if [ ! "$1" ] || [ ! "$2" ]
+    then
+        sudo docker ps && sudo docker images
+        echo
+        echo "$FUNCNAME: Missing operands." >& 2
+        echo
+        astrahelp $FUNCNAME
+        return 1
+    fi
+    sudo docker rm $1 -f
+    sudo docker rmi $2 -f
+}
+
+__NEW_FUNC dockerrmrmi "docker rm && rmi" "<container> <image>"
+
+checklibc() {
+    local libcpath
+    libcpath="./libc.so.6"
+    if [ "$1" ]
+    then
+        libcpath=$1
+    fi
+    strings $libcpath | grep "glibc 2."
+    strings $libcpath | grep " GLIBC"
+}
+
+__NEW_FUNC checklibc "get the version of a libc." "[libcpath=./libc.so.6]"
+
+patchelfnow() {
+    local arg origlib newlib ld elf
+    set -- `getopt -o f:t:i: -l from:,to:,ld: -n $FUNCNAME -- "$@"`
+    origlib="libc.so.6"
+    newlib="./libc.so.6"
+    ld="./ld-linux-x86-64.so.2"
+    while [ $1 ]
+    do
+        case $1 in
+        -f | --from)
+            eval origlib=$2
+            shift 2
+            ;;
+        -t | --to)
+            eval newlib=$2
+            shift 2
+            ;;
+        -i | --ld)
+            eval ld=$2
+            shift 2
+            ;;
+        --)
+            shift
+            break
+            ;;
+        esac
+    done
+    
+    if [ ! "$1" ]
+    then
+        echo "$FUNCNAME: Missing elf." >& 2
+        echo
+        astrahelp $FUNCNAME
+        return 1
+    fi
+    eval elf=$1
+    
+    patchelf --replace-needed $origlib $newlib --set-interpreter $ld $elf
+}
+
+__NEW_FUNC patchelfnow "conveniently patchelf!" "[-f/--from original_lib=libc.so.6] [-t/--to new_lib=./libc.so.6] [-i/--ld interpreter=./ld-linux-x86-64.so.2] <elf>"
+
+__NEW_ALIAS sage104i "conda activate sage104 && sage"
+
+__NEW_ALIAS sage104 "conda activate sage104"
+
+__NEW_ALIAS sourceme "source $__THIS_ASTRA_SCRIPT"
+
+__NEW_ALIAS vimme "vim $__THIS_ASTRA_SCRIPT"
+
+__NEW_ALIAS roppop "ROPgadget --only \"pop|ret\" --binary"
+
+__NEW_ALIAS ropbinsh "ROPgadget --string \"/bin/sh\" --binary"
+
+sageipython() {
+    if [ ! "$1" ]
+    then
+        echo "$FUNCNAME: Missing \`.sage\` file." >& 2
+        echo
+        astrahelp $FUNCNAME
+        return 1
+    fi
+    sage --preparse $1 && ipython -i $1.py
+}
+
+__NEW_FUNC sageipython "interactively run a \`.sage\` file." "<file>"
+
+__NEW_ALIAS sageipy "sageipython"
+
+__SETENV_ASTRAPYTHON() {
+	env PYTHONPATH="$__ASTRAPYTHON:$PYTHONPATH" $@
+}
+
+__NEW_ALIAS astrapython "__SETENV_ASTRAPYTHON python"
+
+__NEW_ALIAS astrapy astrapython
+
+__NEW_ALIAS astraipython "__SETENV_ASTRAPYTHON ipython"
+
+__NEW_ALIAS astraipy astraipython
+
+__NEW_ALIAS astrasageipython "__SETENV_ASTRAPYTHON sageipython"
+
+__NEW_ALIAS astrasageipy "astrasageipython"
