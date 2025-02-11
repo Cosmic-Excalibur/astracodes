@@ -1,4 +1,4 @@
-from sage.all import primes, prod, GF, EllipticCurve, pari
+from sage.all import primes, prod, GF, EllipticCurve, pari, factor
 from Crypto.Util.number import isPrime
 
 ells_200_269 = [*primes(3, 200), 269]
@@ -51,13 +51,8 @@ class CSIDH:
                     E = E.isogeny_codomain(P)
             E = E.quadratic_twist()
         return E.montgomery_model().a2()
-    def isoqfb(self, ell):
-        return self[ell]
-    def __getitem__(self, ell):
-        div, mod = divmod(self.p + 1, ell)
-        if mod:
-            raise ValueError("Invalid %s-isogeny." % ell)
-        return pari.Qfb(ell, 2, div)
+    def qfb(self, ell):
+        return pari.Qfb(ell, 2, (self.p + 1) // ell)
 
 # CSIDH_200_269 = CSIDH(ells_200_269)
 # CSIDH_128_163 = CSIDH(ells_128_163)

@@ -20,7 +20,7 @@ maximal = True
 
 q = 1
 while True:
-    Quat.<i,j,k> = QuaternionAlgebra(-q,-p)
+    Quat = QuaternionAlgebra(-q,-p); i,j,k = Quat.gens()
     if Quat.discriminant() == p: break
     q += 1
 
@@ -39,7 +39,7 @@ def intersect(L0, L1):
 def twistendo(Q):
     M = Q.unit_ideal().basis_matrix()
     L = intersect(M, matrix(map(el2vec, [i,k])))  # compute <i,k> submodule
-    S = diagonal_matrix([round(1e9*sqrt(g.reduced_norm())) for g in Quat.basis()])
+    S = diagonal_matrix([ZZ(round(1e9*sqrt(g.reduced_norm()))) for g in Quat.basis()])
     L = (L * S).LLL() * S**-1                     # find small-norm element
     return vec2el(L.rows()[0])
 
@@ -62,7 +62,7 @@ bfql = lambda L: basis_for_quaternion_lattice(L, reverse=True)
 #Q0 = Quat.quaternion_order([1, i, (1+j)/2, (i+k)/2])   # y^2 = x^3 - x, only p = 3 mod 4
 Q0 = Quat.maximal_order()
 
-K.<pi> = QuadraticField(-p)
+K = QuadraticField(-p); pi = K.gen()
 if maximal:
     O = K.maximal_order()
 else:

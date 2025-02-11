@@ -4,6 +4,25 @@ from Crypto.Util.number import long_to_bytes, bytes_to_long
 l2b = long_to_bytes
 b2l = bytes_to_long
 
+_HEX_2_BITSTR_TABLE = {
+    '0': '0000',
+    '1': '0001',
+    '2': '0010',
+    '3': '0011',
+    '4': '0100',
+    '5': '0101',
+    '6': '0110',
+    '7': '0111',
+    '8': '1000',
+    '9': '1001',
+    'a': '1010',
+    'b': '1011',
+    'c': '1100',
+    'd': '1101',
+    'e': '1110',
+    'f': '1111'
+}
+
 _DEFAULT_BYTE_ENDIAN = 'msb'
 _DEFAULT_BIT_ENDIAN = 'msb'
 _DEFAULT_POLY_ENDIAN = 'msb'
@@ -114,6 +133,50 @@ def bits_to_int(bits, endian = None):
     return bitstr_to_int(''.join(map(str, bits)), endian = endian)
 
 bi2i = bits_to_int
+
+def bytes_to_hex(bytes_, endian = None):
+    if endian is None: endian = _DEFAULT_BYTE_ENDIAN
+    else: _check_endian(endian)
+    return bytes_.hex() if endian in ('big', 'msb') else bytes_[::-1].hex()
+
+b2h = bytes_to_hex
+
+def hex_to_bytes(hex_, endian = None):
+    if endian is None: endian = _DEFAULT_BYTE_ENDIAN
+    else: _check_endian(endian)
+    if len(hex_) & 1:
+        return bytes.fromhex('0'+hex_) if endian in ('big', 'msb') else bytes.fromhex('0'+hex_)[::-1]
+    else:
+        return bytes.fromhex(hex_) if endian in ('big', 'msb') else bytes.fromhex(hex_)[::-1]
+
+h2b = hex_to_bytes
+
+def hex_to_int(hex_):
+    return int(hex_, 16)
+
+h2i = hex_to_int
+
+def int_to_hex(int_):
+    res = f'{int_:x}'
+    return '0' + res if len(res) & 1 else res
+
+i2h = int_to_hex
+
+def hex_to_bitstr(hex_, endian = None):
+    if endian is None: endian = _DEFAULT_BIT_ENDIAN
+    else: _check_endian(endian)
+    res = ''.join(_HEX_2_BITSTR_TABLE[i] for i in hex_)
+    return res if endian in ('big', 'msb') else res[::-1]
+
+h2bis = hex_to_bitstr
+
+def hex_to_bits(hex_, endian = None):
+    if endian is None: endian = _DEFAULT_BIT_ENDIAN
+    else: _check_endian(endian)
+    res = ''.join(_HEX_2_BITSTR_TABLE[i] for i in hex_)
+    return list(map(int, res)) if endian in ('big', 'msb') else list(map(int, res[::-1]))
+
+h2bi = hex_to_bits
 
 def int_to_poly(int_, order = 2, endian = None, ring = None):
     if endian is None: endian = _DEFAULT_POLY_ENDIAN

@@ -5,7 +5,7 @@ alg = astra_logger
 alg.set_debugging(True)
 set_ticktock_log_func(None)
 
-print(alg.colorify("ASTRAPYTHON -- LALLAALLLALLALALAALLLALLLALLALLALLALLLALLAAA :3"))
+print(alg.colorify("ASTRAPYTHON -- Good luck coding LALLAALLLALLALALAALLLALLLALALLAAA :3"))
 ticktock()
 
 from sage.all import *
@@ -13,6 +13,7 @@ from sage.rings.factorint import factor_trial_division
 var('x')
 
 from pwn import *
+from sage.all import load
 
 from Crypto.Util.number import *
 from Crypto.Cipher import AES, DES, DES3, ARC4
@@ -32,12 +33,17 @@ import random
 from random import choice, choices, randint, randrange, getrandbits, randbytes
 import sys
 import os
+import struct
 from os import urandom
 import re
 from re import findall, match, finditer
 from ast import literal_eval
 import base64
 from base64 import b64encode, b64decode
+from gf2bv import LinearSystem
+gf2linsys = LinearSystem
+from gf2bv.crypto.mt import MT19937
+
 
 
 from utils.timeit import timeit, ticktock, set_ticktock_log_func
@@ -66,7 +72,8 @@ from utils.prgen import prgen, prgens
 from utils.bitstruct import *
 from lazycrypto.ecc.csidh import *
 csidh = CSIDH
-from lazymath.graycode import gray_code, gray_code_int, gray_code_poly, gray_code_bits, gray_code_bitstr, gray_code_str
+from lazymath.graycode import *
+from lazycrypto.lattice.coppersmith import *
 
 
 

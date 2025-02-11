@@ -10,18 +10,18 @@ def set_debugging(b):
     global DEBUGGING
     DEBUGGING = bool(b)
 
-green_ = lambda s: '\033[32m%s\033[0m' % s
-red_ = lambda s: '\033[31m%s\033[0m' % s
-yellow_ = lambda s: '\033[33m%s\033[0m' % s
-blue_ = lambda s: '\033[34m%s\033[0m' % s
-cyan_ = lambda s: '\033[36m%s\033[0m' % s
-gray_ = lambda s: '\033[90m%s\033[0m' % s
+green_ = lambda s: '\033[32;1m%s\033[0m' % s
+red_ = lambda s: '\033[31;1m%s\033[0m' % s
+yellow_ = lambda s: '\033[33;1m%s\033[0m' % s
+blue_ = lambda s: '\033[34;1m%s\033[0m' % s
+cyan_ = lambda s: '\033[36;1m%s\033[0m' % s
+gray_ = lambda s: '\033[90;1m%s\033[0m' % s
 underline_ = lambda s: '\033[4m%s\033[0m' % s
 to_printable = lambda b: ''.join(yellow_(chr(x)) if x in range(32,127) else red_('·') for x in b)
 
 good = lambda *args, end = "\n", sep = "\n    ": _output(f'[{green_("+")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
 bad = lambda *args, end = "\n", sep = "\n    ": _output(f'[{red_("-")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
-info = lambda *args, end = "\n", sep = "\n    ": _output(f'[{cyan_("*")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
+info = lambda *args, end = "\n", sep = "\n    ": _output(f'[{blue_("*")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
 warn = lambda *args, end = "\n", sep = "\n    ": _output(f'[{yellow_("!")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
 debug = lambda *args, end = "\n", sep = "\n        ": _output(f'[{gray_("DEBUG")}] ' + sep.join(str(arg) for arg in args) + end, end = "") if DEBUGGING else None
 def gets(*args, header = True, end = "", sep = "\n    "):
