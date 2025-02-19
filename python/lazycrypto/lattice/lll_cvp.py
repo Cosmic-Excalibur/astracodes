@@ -34,14 +34,20 @@ def build_lattice(mat, lb, ub):
     return L, target, Q
 
 
-def LLL(M):
-    logger.debug(f"LLL reduction on matrix of size {M.nrows()}x{M.ncols()}")
-    return M.LLL()
+def LLL(M, *args, **kwargs):
+    if args or kwargs:
+        logger.debug(f"LLL reduction on matrix of size {M.nrows()}x{M.ncols()} with params", args, *(f"{k} = {v}" for k, v in kwargs.items()))
+    else:
+        logger.debug(f"LLL reduction on matrix of size {M.nrows()}x{M.ncols()}")
+    return M.LLL(*args, **kwargs)
 
 
-def BKZ(M):
-    logger.debug(f"BKZ reduction on matrix of size {M.nrows()}x{M.ncols()}")
-    return M.BKZ()
+def BKZ(M, *args, **kwargs):
+    if args or kwargs:
+        logger.debug(f"BKZ reduction on matrix of size {M.nrows()}x{M.ncols()} with params", args, *(f"{k} = {v}" for k, v in kwargs.items()))
+    else:
+        logger.debug(f"BKZ reduction on matrix of size {M.nrows()}x{M.ncols()}")
+    return M.BKZ(*args, **kwargs)
 
 
 def flatter(M):

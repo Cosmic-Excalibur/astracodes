@@ -1,5 +1,6 @@
 from sage.all import oo, Zmod, sign, ZZ
 from Crypto.Util.number import long_to_bytes, bytes_to_long
+import itertools
 
 l2b = long_to_bytes
 b2l = bytes_to_long
@@ -24,7 +25,7 @@ _HEX_2_BITSTR_TABLE = {
 }
 
 _DEFAULT_BYTE_ENDIAN = 'msb'
-_DEFAULT_BIT_ENDIAN = 'msb'
+_DEFAULT_BIT_ENDIAN  = 'msb'
 _DEFAULT_POLY_ENDIAN = 'msb'
 
 def _check_endian(endian):
@@ -40,8 +41,12 @@ def set_default_endians(byte_endian = 'msb', bit_endian = 'msb', poly_endian = '
     _DEFAULT_BIT_ENDIAN = bit_endian
     _DEFAULT_POLY_ENDIAN = poly_endian
 
+sde = set_default_endians
+
 def get_default_endians():
     return {'byte': _DEFAULT_BYTE_ENDIAN, 'bit': _DEFAULT_BIT_ENDIAN, 'poly': _DEFAULT_POLY_ENDIAN}
+
+gde = get_default_endians
 
 def get_default_byte_endian():
     return _DEFAULT_BYTE_ENDIAN
@@ -274,6 +279,28 @@ def poly_to_int(poly, order = None, endian = None):
     return poly.change_ring(ZZ)(order)
 
 p2i = poly_to_int
+
+def _factory(a2i, i2b):
+    return lambda x: i2b(a2i(x))
+
+_abbr_table = {
+    'int':    'i',
+    'bits':   'bi',
+    'bitstr': 'bis',
+    'bytes':  'b',
+    'poly':   'p',
+    'hex':    'h'
+}
+
+for (_a, _abbr_a), (_b, _abbr_b) in itertools.permutations(_abbr_table.items(), 2):
+    _name = f'{_a}_to_{_b}'
+    _abbr_name = f'{_abbr_a}2{_abbr_b}'
+    if _abbr_name not in globals():
+        assert _abbr_a != 'i' and _abbr_b != 'i'
+        _a2i = globals()[f'{_abbr_a}2i']
+        _i2b = globals()[f'i2{_abbr_b}']
+        _func = _factory(_a2i, _i2b)
+        globals()[_name] = globals()[_abbr_name] = _func
 
 if __name__ == '__main__':
     from utils.timeit import ticktock, timeit

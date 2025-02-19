@@ -8,72 +8,104 @@ set_ticktock_log_func(None)
 print(alg.colorify("ASTRAPYTHON -- Good luck coding LALLAALLLALLALALAALLLALLLALALLAAA :3"))
 ticktock()
 
-from sage.all import *
-from sage.rings.factorint import factor_trial_division
-var('x')
+from rich.progress import Progress
 
-from pwn import *
-from sage.all import load
-
-from Crypto.Util.number import *
-from Crypto.Cipher import AES, DES, DES3, ARC4
-from Crypto.Util.Padding import pad, unpad
-import hashlib
-from hashlib import sha256, md5
-import functools
-import itertools
-import tqdm
-from rich.progress import track as track
-richtrack = track
-from rich import print as richprint
-import gf2bv
-import parse
-import string
-import random
-from random import choice, choices, randint, randrange, getrandbits, randbytes
 import sys
-import os
-import struct
-from os import urandom
-import re
-from re import findall, match, finditer
-from ast import literal_eval
-import base64
-from base64 import b64encode, b64decode
-from gf2bv import LinearSystem
-gf2linsys = LinearSystem
-from gf2bv.crypto.mt import MT19937
+
+_import_cnt = 0
+
+with Progress() as _progress:
+    _startup_task = _progress.add_task("Preparing...", total = 1747)
+    class _Watcher:
+        @classmethod
+        def find_module(cls, name, path, target = None):
+            global _import_cnt
+            _import_cnt += 1
+            _progress.update(_startup_task, advance = 1)
+            return None
+    sys.meta_path.insert(0, _Watcher)
+    
+    from sage.all import *
+    from sage.rings.factorint import factor_trial_division
+    from sage.schemes.elliptic_curves.mod_poly import classical_modular_polynomial
+    var('x')
+
+    from pwn import *
+    from sage.all import load
+
+    from Crypto.Util.number import *
+    from Crypto.Cipher import AES, DES, DES3, ARC4
+    from Crypto.Util.Padding import pad, unpad
+    import hashlib
+    from hashlib import sha256, md5
+    import functools
+    import itertools
+    import tqdm
+    from rich.progress import track as track
+    richtrack = track
+    from rich import print as richprint
+    import gf2bv
+    import parse
+    import string
+    import random
+    from random import choice, choices, randint, randrange, getrandbits, randbytes
+    import sys
+    import os
+    import struct
+    from os import urandom
+    import re
+    from re import findall, match, finditer
+    from ast import literal_eval
+    import base64
+    from base64 import b64encode, b64decode
+    from gf2bv import LinearSystem
+    gf2linsys = LinearSystem
+    from gf2bv.crypto.mt import MT19937
 
 
-
-from utils.timeit import timeit, ticktock, set_ticktock_log_func
-stlf = set_ticktock_log_func
-from utils.gg import GG, set_hp, get_hp
-gg = goodgame = GG
-from utils import slicing
-from utils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter
-set_fast_cutter_thres = sfct = set_fast_cutter_threshold
-get_fast_cutter_thres = gfct = get_fast_cutter_threshold
-from utils import varfactory
-from utils.varfactory import V
-import itertools_ex
-from lazypwn import *
-from lazymath.linsys import LinearizedSystem
-linsys = Linsys = LinSys = LinearizedSystem
-from lazycrypto.lattice.small_roots import small_roots
-from lazycrypto.lattice.lll_cvp import *
-from lazycrypto.lattice.primal_attack import primal_attack
-from pow.powsolver import PoWSolver
-powsolver = Powsolver = PoWSolver
-from utils.peek import peek, peek_print
-peekprint = peek_print
-from utils.printname import printname
-from utils.prgen import prgen, prgens
-from utils.bitstruct import *
-from lazycrypto.ecc.csidh import *
-csidh = CSIDH
-from lazymath.graycode import *
-from lazycrypto.lattice.coppersmith import *
+    
+    from astrapython_buoy import *
+    
+    import itertools_ex
+    
+    from lazycrypto.ecc.csidh import *
+    csidh = CSIDH
+    from lazycrypto.lattice.coppersmith import *
+    from lazycrypto.lattice.lll_cvp import *
+    from lazycrypto.lattice.primal_attack import primal_attack
+    from lazycrypto.lattice.small_roots import small_roots
+    
+    from lazymath.graycode import *
+    from lazymath.linsys import LinearizedSystem
+    linsys = Linsys = LinSys = LinearizedSystem
+    
+    from lazypwn import *
+    
+    from pow.powsolver import PoWSolver
+    powsolver = Powsolver = PoWSolver
+    
+    from utils.bitstruct import *
+    from utils.bool import *
+    from utils.filter import *
+    from utils.gg import GG, set_hp, get_hp
+    gg = goodgame = GG
+    from utils.peek import peek, peek_print
+    peekprint = peek_print
+    from utils.prgen import *
+    from utils.printname import *
+    from utils import slicing
+    from utils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter
+    set_fast_cutter_thres = sfct = set_fast_cutter_threshold
+    get_fast_cutter_thres = gfct = get_fast_cutter_threshold
+    from utils.timeit import *
+    stlf = set_ticktock_log_func
+    from utils import varfactory
+    from utils.varfactory import V
+    from utils.wrapper import *
+    
+    
+    
+    sys.meta_path.pop(0)
 
 
 
@@ -113,7 +145,7 @@ Astrageldon's personal python :3
 """))
 
 
-alg.debug("Startup took %.4f second(s)." % ticktock())
+alg.debug("Startup took %.4f second(s) with %d import attempt(s)." % (ticktock(), _import_cnt))
 print()
 
 set_ticktock_log_func(print)

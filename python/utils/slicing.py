@@ -1,5 +1,6 @@
 from sortedcontainers import SortedDict, SortedList
 from functools import reduce
+from typing import Sequence
 
 def do_slice(slice_, func, n = None, ret_type = list):    # slow
     if n == 0: return ret_type([])
@@ -64,14 +65,16 @@ class cutter:
         if len(seq) == 0:
             raise ValueError
         self.ret_type = ret_type or type(seq[0])
-        self.do_lstrip = lstrip
-        self.do_rstrip = rstrip
+        if not issubclass(self.ret_type, Sequence):
+            self.ret_type = list
         if len(seq) == 1:
-            self.seq = seq[0]
+            self.seq = self.ret_type(seq[0])
         else:
             self.seq = self.ret_type()
             for s in seq: self.seq += self.ret_type(s)
         self._scratches = SortedDict()
+        self.do_lstrip = lstrip
+        self.do_rstrip = rstrip
     def split(self, indices = None):
         self.refresh()
         if indices is not None:
