@@ -15,7 +15,7 @@ import sys
 _import_cnt = 0
 
 with Progress() as _progress:
-    _startup_task = _progress.add_task("Preparing...", total = 1747)
+    _startup_task = _progress.add_task("Preparing...", total = 1749)
     class _Watcher:
         @classmethod
         def find_module(cls, name, path, target = None):
@@ -48,7 +48,7 @@ with Progress() as _progress:
     import parse
     import string
     import random
-    from random import choice, choices, randint, randrange, getrandbits, randbytes
+    from random import choice, choices, randint, randrange, getrandbits, randbytes, shuffle
     import sys
     import os
     import struct
@@ -61,6 +61,7 @@ with Progress() as _progress:
     from gf2bv import LinearSystem
     gf2linsys = LinearSystem
     from gf2bv.crypto.mt import MT19937
+    from urllib.parse import quote, unquote
 
 
     
@@ -93,6 +94,7 @@ with Progress() as _progress:
     peekprint = peek_print
     from utils.prgen import *
     from utils.printname import *
+    from utils.shuffled import *
     from utils import slicing
     from utils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter
     set_fast_cutter_thres = sfct = set_fast_cutter_threshold

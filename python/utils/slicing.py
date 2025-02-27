@@ -65,7 +65,7 @@ class cutter:
         if len(seq) == 0:
             raise ValueError
         self.ret_type = ret_type or type(seq[0])
-        if not issubclass(self.ret_type, Sequence):
+        if not issubclass(self.ret_type, Sequence) or issubclass(self.ret_type, range):
             self.ret_type = list
         if len(seq) == 1:
             self.seq = self.ret_type(seq[0])
@@ -139,7 +139,7 @@ class cutter:
         n = self.seq.__len__() + 1
         ptr = 0
         dummy = list(range(n))
-        for next_ in sorted(reduce(lambda a, b: a | b, ((set(dummy[idx]) if isinstance(idx, slice) else set([idx])) for idx in indices), set())):
+        for next_ in sorted(reduce(lambda a, b: a | b, (set(dummy[idx]) if isinstance(idx, slice) else set([dummy[idx]]) for idx in indices), set())):
             if not self.do_lstrip or next_ > 0:
                 yield self.seq[ptr:next_]
             ptr = next_

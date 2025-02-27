@@ -109,13 +109,20 @@ def global_odd_print(*args, **kwargs):
 def global_even_print(*args, **kwargs):
     print(*args, **kwargs)
 
-@odd
-def odd_print(*args, **kwargs):
-    print(*args, **kwargs)
+def odd_print_factory(print_func = print):
+    @odd
+    def odd_print(*args, **kwargs):
+        print_func(*args, **kwargs)
+    return odd_print
 
-@even
-def even_print(*args, **kwargs):
-    print(*args, **kwargs)
+def even_print_factory(print_func = print):
+    @even
+    def even_print(*args, **kwargs):
+        print_func(*args, **kwargs)
+    return even_print
+
+odd_print = odd_print_factory()
+even_print = even_print_factory()
 
 def set_ticktock_log_func(log_func, wrapper = 'Ticktock: %.4fs'):
     global _log_func

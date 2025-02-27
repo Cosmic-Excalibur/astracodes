@@ -1,23 +1,8 @@
-import string
+from utils.commonstrings import *
 
-_digits = string.digits
-_uppercase = string.ascii_uppercase
-_lowercase = string.ascii_lowercase
-_letters = string.ascii_letters
-_hexlower = '0123456789abcdef'
-_hexupper = '0123456789ABCDEF'
-_hexdigits = string.hexdigits
-_punctuation = string.punctuation
 
-_digits_b = _digits.encode('utf-8')
-_uppercase_b = _uppercase.encode('utf-8')
-_lowercase_b = _lowercase.encode('utf-8')
-_letters_b = _letters.encode('utf-8')
-_hexlower_b = _hexlower.encode('utf-8')
-_hexupper_b = _hexupper.encode('utf-8')
-_hexdigits_b = _hexdigits.encode('utf-8')
-_punctuation_b = _punctuation.encode('utf-8')
-
+dict_map = lambda x, y: map(lambda z: x[z], y)
+dict_map_get = lambda x, y, default = None: map(lambda z: x.get(z, default), y)
 
 map_strip = lambda x, *args, **kwargs: map(lambda y: y.strip(*args, **kwargs), x)
 
@@ -28,25 +13,25 @@ filter_even      = lambda x: filter(lambda y: not int(y) % 2, x)
 
 filter_none        = lambda x: filter(lambda y: y is None, x)
 filter_bool        = lambda x: filter(lambda y: bool(y), x)
-filter_digits      = lambda x: filter(lambda y: y in _digits      if isinstance(y, str) else y in _digits_b, x)
-filter_uppercase   = lambda x: filter(lambda y: y in _uppercase   if isinstance(y, str) else y in _uppercase_b, x)
-filter_lowercase   = lambda x: filter(lambda y: y in _lowercase   if isinstance(y, str) else y in _lowercase_b, x)
-filter_letters     = lambda x: filter(lambda y: y in _letters     if isinstance(y, str) else y in _letters_b, x)
-filter_hexlower    = lambda x: filter(lambda y: y in _hexlower    if isinstance(y, str) else y in _hexlower_b, x)
-filter_hexupper    = lambda x: filter(lambda y: y in _hexupper    if isinstance(y, str) else y in _hexupper_b, x)
-filter_hexdigits   = lambda x: filter(lambda y: y in _hexdigits   if isinstance(y, str) else y in _hexdigits_b, x)
-filter_punctuation = lambda x: filter(lambda y: y in _punctuation if isinstance(y, str) else y in _punctuation_b, x)
+filter_digits      = lambda x: filter(lambda y: y in digits      if isinstance(y, str) else y in digits_b, x)
+filter_uppercase   = lambda x: filter(lambda y: y in uppercase   if isinstance(y, str) else y in uppercase_b, x)
+filter_lowercase   = lambda x: filter(lambda y: y in lowercase   if isinstance(y, str) else y in lowercase_b, x)
+filter_letters     = lambda x: filter(lambda y: y in letters     if isinstance(y, str) else y in letters_b, x)
+filter_hexlower    = lambda x: filter(lambda y: y in hexlower    if isinstance(y, str) else y in hexlower_b, x)
+filter_hexupper    = lambda x: filter(lambda y: y in hexupper    if isinstance(y, str) else y in hexupper_b, x)
+filter_hexdigits   = lambda x: filter(lambda y: y in hexdigits   if isinstance(y, str) else y in hexdigits_b, x)
+filter_punctuation = lambda x: filter(lambda y: y in punctuation if isinstance(y, str) else y in punctuation_b, x)
 
 unfilter_none        = lambda x: filter(lambda y: y is not None, x)
 unfilter_bool        = lambda x: filter(lambda y: not bool(y), x)
-unfilter_digits      = lambda x: filter(lambda y: y not in _digits      if isinstance(y, str) else y not in _digits_b, x)
-unfilter_uppercase   = lambda x: filter(lambda y: y not in _uppercase   if isinstance(y, str) else y not in _uppercase_b, x)
-unfilter_lowercase   = lambda x: filter(lambda y: y not in _lowercase   if isinstance(y, str) else y not in _lowercase_b, x)
-unfilter_letters     = lambda x: filter(lambda y: y not in _letters     if isinstance(y, str) else y not in _letters_b, x)
-unfilter_hexlower    = lambda x: filter(lambda y: y not in _hexlower    if isinstance(y, str) else y not in _hexlower_b, x)
-unfilter_hexupper    = lambda x: filter(lambda y: y not in _hexupper    if isinstance(y, str) else y not in _hexupper_b, x)
-unfilter_hexdigits   = lambda x: filter(lambda y: y not in _hexdigits   if isinstance(y, str) else y not in _hexdigits_b, x)
-unfilter_punctuation = lambda x: filter(lambda y: y not in _punctuation if isinstance(y, str) else y not in _punctuation_b, x)
+unfilter_digits      = lambda x: filter(lambda y: y not in digits      if isinstance(y, str) else y not in digits_b, x)
+unfilter_uppercase   = lambda x: filter(lambda y: y not in uppercase   if isinstance(y, str) else y not in uppercase_b, x)
+unfilter_lowercase   = lambda x: filter(lambda y: y not in lowercase   if isinstance(y, str) else y not in lowercase_b, x)
+unfilter_letters     = lambda x: filter(lambda y: y not in letters     if isinstance(y, str) else y not in letters_b, x)
+unfilter_hexlower    = lambda x: filter(lambda y: y not in hexlower    if isinstance(y, str) else y not in hexlower_b, x)
+unfilter_hexupper    = lambda x: filter(lambda y: y not in hexupper    if isinstance(y, str) else y not in hexupper_b, x)
+unfilter_hexdigits   = lambda x: filter(lambda y: y not in hexdigits   if isinstance(y, str) else y not in hexdigits_b, x)
+unfilter_punctuation = lambda x: filter(lambda y: y not in punctuation if isinstance(y, str) else y not in punctuation_b, x)
 
 filter_true = filter_bool
 filter_false = unfilter_bool
