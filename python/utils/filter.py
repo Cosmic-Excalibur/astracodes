@@ -22,6 +22,9 @@ filter_hexupper    = lambda x: filter(lambda y: y in hexupper    if isinstance(y
 filter_hexdigits   = lambda x: filter(lambda y: y in hexdigits   if isinstance(y, str) else y in hexdigits_b, x)
 filter_punctuation = lambda x: filter(lambda y: y in punctuation if isinstance(y, str) else y in punctuation_b, x)
 
+filter_contains = lambda x, y: filter(lambda z: x in z, y)
+filter_in       = lambda x, y: filter(lambda z: z in x, y)
+
 unfilter_none        = lambda x: filter(lambda y: y is not None, x)
 unfilter_bool        = lambda x: filter(lambda y: not bool(y), x)
 unfilter_digits      = lambda x: filter(lambda y: y not in digits      if isinstance(y, str) else y not in digits_b, x)
@@ -33,5 +36,11 @@ unfilter_hexupper    = lambda x: filter(lambda y: y not in hexupper    if isinst
 unfilter_hexdigits   = lambda x: filter(lambda y: y not in hexdigits   if isinstance(y, str) else y not in hexdigits_b, x)
 unfilter_punctuation = lambda x: filter(lambda y: y not in punctuation if isinstance(y, str) else y not in punctuation_b, x)
 
+unfilter_contains = lambda x, y: filter(lambda z: x not in z, y)
+unfilter_in       = lambda x, y: filter(lambda z: z not in x, y)
+
 filter_true = filter_bool
 filter_false = unfilter_bool
+filter_notin = filter_not_in = unfilter_in
+filter_ni = filter_contains
+filter_notni = filter_not_ni = filter_notcontains = filter_not_contains = unfilter_contains

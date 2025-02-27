@@ -14,14 +14,17 @@ p_200_269    = 4*prod(ells_200_269) - 1
 ells_128_163 = [*primes(3, 128), 163]
 p_128_163    = 4*prod(ells_128_163) - 1
 
-ells_110_113 = [*primes(3, 114)]
+ells_110_113 = [*primes(3, 110), 113]
 p_110_113    = 4*prod(ells_110_113) - 1
 
 ells_102_149 = [*primes(3, 102), 149]
 p_102_149    = 4*prod(ells_102_149) - 1
 
 ells_20_97   = [*primes(3,  20),  97]
-p_20_97      = 4*prod(ells_20_97) - 1
+p_20_97      = 4*prod(ells_20_97)   - 1
+
+ells_14_17   = [*primes(3,  14),  17]
+p_14_17      = 4*prod(ells_14_17)   - 1
 
 class CSIDH:
     def __init__(self, p, sanity_check = True, use_curve = False):
