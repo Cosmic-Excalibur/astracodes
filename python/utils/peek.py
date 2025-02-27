@@ -1,27 +1,27 @@
 from logger.astra_logger import *
 
-def peek(needle, mess, stride = 10):
+def peek(needle, haystack, vision = 10, atom_needle = False):
     i = -1
     l = len(needle) if hasattr(needle, '__len__') else 1
     while True:
         try:
-            i = mess.index(needle, i+1)
-            yield mess[max(i-stride,0):i+l+stride]
+            i = haystack.index(needle, i+(l if atom_needle else 1))
+            yield haystack[max(i-vision,0):i+l+vision]
         except ValueError:
             return
 
-def peek_print(needle: str, mess: str, stride = 10, pos = True, printer = print, color = True, bound = True, ret = False):
-    g = _peek_print(needle, mess, stride = stride, pos = pos, printer = printer, color = color, bound = bound)
+def peek_print(needle: str, haystack: str, vision = 10, atom_needle = False, pos = True, printer = print, color = True, bound = True, ret = False):
+    g = _peek_print(needle, haystack, vision = vision, atom_needle = atom_needle, pos = pos, printer = printer, color = color, bound = bound)
     if ret:
         return g
     else:
         for _ in g: pass
 
-def _peek_print(needle: str, mess: str, stride = 10, pos = True, printer = print, color = True, bound = True):
-    assert stride >= 0
-    i = -len(mess)-1
+def _peek_print(needle: str, haystack: str, vision = 10, atom_needle = False, pos = True, printer = print, color = True, bound = True):
+    assert vision >= 0
+    i = -len(haystack)-1
     l = len(needle)
-    L = len(mess)
+    L = len(haystack)
     ell = '…'
     if color: ell = gray_(ell)
     endleft = '“'
@@ -32,25 +32,25 @@ def _peek_print(needle: str, mess: str, stride = 10, pos = True, printer = print
     head = f'%{len(str(L))}d: '
     if color: head = yellow_(head)
     while True:
-        i = mess.find(needle, i+1)
+        i = haystack.find(needle, i+(l if atom_needle else 1))
         if i == -1:
             return
         res = ''
         if pos:
             res += head % i
-        if i > stride:
-            left = mess[i-stride:i]
+        if i > vision:
+            left = haystack[i-vision:i]
             if bound: res += ell
         else:
-            left = mess[:i]
+            left = haystack[:i]
             if bound: res += endleft
-        if i+l+stride < L:
-            right = mess[i+l:i+l+stride]
+        if i+l+vision < L:
+            right = haystack[i+l:i+l+vision]
             if bound: right += endright
         else:
-            right = mess[i+l:]
+            right = haystack[i+l:]
         res += left
         res += colored_needle
         res += right
         printer(res)
-        yield i, mess[max(0,i-stride):i+l+stride]
+        yield i, haystack[max(0,i-vision):i+l+vision]
