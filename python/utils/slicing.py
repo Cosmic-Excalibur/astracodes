@@ -61,14 +61,14 @@ def get_fast_cutter_threshold():
     return _FAST_CUTTER_THRESHOLD
 
 class cutter:
-    def __init__(self, *seq, lstrip = True, rstrip = True, ret_type = None):
+    def __init__(self, *seq, lstrip = True, rstrip = True):
         if len(seq) == 0:
             raise ValueError
-        self.ret_type = ret_type or type(seq[0])
-        if not issubclass(self.ret_type, Sequence) or issubclass(self.ret_type, range):
+        self.ret_type = type(seq[0])
+        if not issubclass(self.ret_type, Sequence):
             self.ret_type = list
         if len(seq) == 1:
-            self.seq = self.ret_type(seq[0])
+            self.seq = seq[0]
         else:
             self.seq = self.ret_type()
             for s in seq: self.seq += self.ret_type(s)
@@ -180,6 +180,63 @@ class cutter:
         return f'cutter({self.seq})'
     def __repr__(self):
         return self.__str__()
+
+class long_range:
+    def __init__(self, *args, **kwargs):
+        self._range = range(*args, **kwargs)
+        self.start, self.step, self.stop = self._range.start, self._range.step, self._range.stop
+    def __len__(self):
+        return max(_ceildiv(self.stop - self.start, self.step), 0)
+    def count(self, *args, **kwargs):
+        return self._range.count(*args, **kwargs)
+    def index(self, *args, **kwargs):
+        return self._range.index(*args, **kwargs)
+    def __bool__(self, *args, **kwargs):
+        return self._range.__bool__(*args, **kwargs)
+    def __contains__(self, *args, **kwargs):
+        return self._range.__contains__(*args, **kwargs)
+    def __delattr__(self, *args, **kwargs):
+        return self._range.__delattr__(*args, **kwargs)
+    def __dir__(self, *args, **kwargs):
+        return self._range.__dir__(*args, **kwargs)
+    def __doc__(self, *args, **kwargs):
+        return self._range.__doc__(*args, **kwargs)
+    def __eq__(self, *args, **kwargs):
+        return self._range.__eq__(*args, **kwargs)
+    def __format__(self, *args, **kwargs):
+        return self._range.__format__(*args, **kwargs)
+    def __ge__(self, *args, **kwargs):
+        return self._range.__ge__(*args, **kwargs)
+    def __getitem__(self, *args, **kwargs):
+        return self._range.__getitem__(*args, **kwargs)
+    def __getstate__(self, *args, **kwargs):
+        return self._range.__getstate__(*args, **kwargs)
+    def __gt__(self, *args, **kwargs):
+        return self._range.__gt__(*args, **kwargs)
+    def __hash__(self, *args, **kwargs):
+        return self._range.__hash__(*args, **kwargs)
+    def __iter__(self, *args, **kwargs):
+        return self._range.__iter__(*args, **kwargs)
+    def __le__(self, *args, **kwargs):
+        return self._range.__le__(*args, **kwargs)
+    def __lt__(self, *args, **kwargs):
+        return self._range.__lt__(*args, **kwargs)
+    def __ne__(self, *args, **kwargs):
+        return self._range.__ne__(*args, **kwargs)
+    def __reduce__(self, *args, **kwargs):
+        return self._range.__reduce__(*args, **kwargs)
+    def __reduce_ex__(self, *args, **kwargs):
+        return self._range.__reduce_ex__(*args, **kwargs)
+    def __repr__(self):
+        return f'long_range({self.start}, {self.stop}, {self.step})'
+    def __reversed__(self, *args, **kwargs):
+        return self._range.__reversed__(*args, **kwargs)
+    def __sizeof__(self, *args, **kwargs):
+        return self._range.__sizeof__(*args, **kwargs)
+    def __str__(self):
+        return f'long_range({self.start}, {self.stop}, {self.step})'
+    def __subclasshook__(self, *args, **kwargs):
+        return self._range.__subclasshook__(*args, **kwargs)
 
 if __name__ == '__main__':
     from rich.progress import track

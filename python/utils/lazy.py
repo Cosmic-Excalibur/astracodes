@@ -96,7 +96,7 @@ with Progress() as _progress:
     from utils.printname import *
     from utils.shuffled import *
     from utils import slicing
-    from utils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter
+    from utils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter, long_range
     set_fast_cutter_thres = sfct = set_fast_cutter_threshold
     get_fast_cutter_thres = gfct = get_fast_cutter_threshold
     from utils.timeit import *
