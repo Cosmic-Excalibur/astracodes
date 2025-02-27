@@ -10,6 +10,14 @@ def set_debugging(b):
     global DEBUGGING
     DEBUGGING = bool(b)
 
+def set_input(func):
+    global _input
+    _input = func
+
+def set_output(func):
+    global _output
+    _output = func
+
 green_ = lambda s: '\033[32;1m%s\033[0m' % s
 red_ = lambda s: '\033[31;1m%s\033[0m' % s
 yellow_ = lambda s: '\033[33;1m%s\033[0m' % s
@@ -19,11 +27,11 @@ gray_ = lambda s: '\033[90;1m%s\033[0m' % s
 underline_ = lambda s: '\033[4m%s\033[0m' % s
 to_printable = lambda b: ''.join(yellow_(chr(x)) if x in range(32,127) else red_('·') for x in b)
 
-good = lambda *args, end = "\n", sep = "\n    ": _output(f'[{green_("+")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
-bad = lambda *args, end = "\n", sep = "\n    ": _output(f'[{red_("-")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
-info = lambda *args, end = "\n", sep = "\n    ": _output(f'[{blue_("*")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
-warn = lambda *args, end = "\n", sep = "\n    ": _output(f'[{yellow_("!")}] ' + sep.join(str(arg) for arg in args) + end, end = "")
-debug = lambda *args, end = "\n", sep = "\n        ": _output(f'[{gray_("DEBUG")}] ' + sep.join(str(arg) for arg in args) + end, end = "") if DEBUGGING else None
+good = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{green_("+")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)
+bad = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{red_("-")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)
+info = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{blue_("*")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)
+warn = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{yellow_("!")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)
+debug = lambda *args, end = "\n", sep = "\n        ", **kwargs: _output(f'[{gray_("DEBUG")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs) if DEBUGGING else None
 def gets(*args, header = True, end = "", sep = "\n    "):
     _output((f'[{gray_("·")}] ' if header else '') + sep.join(str(arg) for arg in args) + end, end = "")
     return _input()
