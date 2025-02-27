@@ -64,14 +64,13 @@ class cutter:
     def __init__(self, *seq, lstrip = True, rstrip = True):
         if len(seq) == 0:
             raise ValueError
-        self.ret_type = type(seq[0])
-        if not issubclass(self.ret_type, Sequence):
-            self.ret_type = list
+        typ = type(seq[0])
         if len(seq) == 1:
-            self.seq = seq[0]
+            self.seq = seq[0] if issubclass(typ, Sequence) else list(seq[0])
         else:
-            self.seq = self.ret_type()
-            for s in seq: self.seq += self.ret_type(s)
+            if not issubclass(typ, Sequence): typ = list
+            self.seq = typ()
+            for s in seq: self.seq += typ(s)
         self._scratches = SortedDict()
         self.do_lstrip = lstrip
         self.do_rstrip = rstrip
