@@ -20,11 +20,20 @@ p_110_113    = 4*prod(ells_110_113) - 1
 ells_102_149 = [*primes(3, 102), 149]
 p_102_149    = 4*prod(ells_102_149) - 1
 
+ells_80_97   = [*primes(3,  80),  97]
+p_80_97      = 4*prod(ells_80_97)   - 1
+
+ells_42_61   = [*primes(3,  42),  61]
+p_42_61      = 4*prod(ells_42_61)   - 1
+
 ells_20_97   = [*primes(3,  20),  97]
 p_20_97      = 4*prod(ells_20_97)   - 1
 
 ells_14_17   = [*primes(3,  14),  17]
 p_14_17      = 4*prod(ells_14_17)   - 1
+
+ells_4_5     = [*primes(3,   4),   5]
+p_4_5        = 4*prod(ells_4_5)     - 1
 
 class CSIDH:
     def __init__(self, p, sanity_check = True, use_curve = False):
@@ -48,6 +57,7 @@ class CSIDH:
                     raise ValueError("Malformed p for CSIDH.")
         self.F = GF(self.p)
         self._use_curve = use_curve
+        self.base = EllipticCurve(self.F, [0, 0, 0, 1, 0])
     def __str__(self):
         return f"CSIDH protocol over {self.F} with primes {', '.join(map(str, self.ells))}."
     def __repr__(self):

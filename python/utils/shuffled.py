@@ -1,9 +1,11 @@
 from random import shuffle
+from typing import Sequence
 
 def shuffled(x):
     tmp = list(x)
     shuffle(tmp)
-    return type(x)(tmp)
+    typ = type(x)
+    return tmp if typ == range or issubclass(typ, Sequence) else typ(tmp)
 
 def random_table(dom):
     ret = dict()

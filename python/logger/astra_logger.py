@@ -18,13 +18,14 @@ def set_output(func):
     global _output
     _output = func
 
-green_ = lambda s: '\033[32;1m%s\033[0m' % s
-red_ = lambda s: '\033[31;1m%s\033[0m' % s
-yellow_ = lambda s: '\033[33;1m%s\033[0m' % s
-blue_ = lambda s: '\033[34;1m%s\033[0m' % s
-cyan_ = lambda s: '\033[36;1m%s\033[0m' % s
-gray_ = lambda s: '\033[90;1m%s\033[0m' % s
-underline_ = lambda s: '\033[4m%s\033[0m' % s
+green_ = lambda s: '\033[32;1m%s\033[0m'  % str(s)
+red_ = lambda s: '\033[31;1m%s\033[0m'    % str(s)
+yellow_ = lambda s: '\033[33;1m%s\033[0m' % str(s)
+blue_ = lambda s: '\033[34;1m%s\033[0m'   % str(s)
+cyan_ = lambda s: '\033[36;1m%s\033[0m'   % str(s)
+gray_ = lambda s: '\033[90;1m%s\033[0m'   % str(s)
+underline_ = lambda s: '\033[4m%s\033[0m' % str(s)
+
 to_printable = lambda b: ''.join(yellow_(chr(x)) if x in range(32,127) else red_('·') for x in b)
 
 good = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{green_("+")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)

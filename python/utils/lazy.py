@@ -28,7 +28,9 @@ with Progress() as _progress:
     from sage.all import *
     from sage.rings.factorint import factor_trial_division
     from sage.schemes.elliptic_curves.mod_poly import classical_modular_polynomial
+    from sage.rings.number_field.order_ideal import NumberFieldOrderIdeal
     var('x')
+    restore('log')
 
     from pwn import *
     from sage.all import load
@@ -90,6 +92,7 @@ with Progress() as _progress:
     from utils.filter import *
     from utils.gg import GG, set_hp, get_hp
     gg = goodgame = GG
+    from utils.path import *
     from utils.peek import peek, peek_print
     peekprint = peek_print
     from utils.prgen import *

@@ -12,5 +12,5 @@ def set_hp(hp):
     global _goodgame_hp
     _goodgame_hp = int(hp)
 
-def get_hp(hp):
+def get_hp():
     return _goodgame_hp
