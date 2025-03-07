@@ -5,6 +5,7 @@ dict_map = lambda x, y: map(lambda z: x[z], y)
 dict_map_get = lambda x, y, default = None: map(lambda z: x.get(z, default), y)
 
 map_strip = lambda x, *args, **kwargs: map(lambda y: y.strip(*args, **kwargs), x)
+map_relu  = lambda x: map(lambda y: y if y >= 0 else 0, x)
 
 filter_strip     = lambda x, *args, **kwargs: filter(lambda y: y.strip(*args, **kwargs), x)
 filter_map_strip = lambda x, *args, **kwargs: map_strip(filter(lambda y: y.strip(*args, **kwargs), x), *args, **kwargs)

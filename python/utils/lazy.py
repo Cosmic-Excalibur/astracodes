@@ -15,7 +15,7 @@ import sys
 _import_cnt = 0
 
 with Progress() as _progress:
-    _startup_task = _progress.add_task("Preparing...", total = 1749)
+    _startup_task = _progress.add_task("Preparing...", total = 1751)
     class _Watcher:
         @classmethod
         def find_module(cls, name, path, target = None):
@@ -30,10 +30,10 @@ with Progress() as _progress:
     from sage.schemes.elliptic_curves.mod_poly import classical_modular_polynomial
     from sage.rings.number_field.order_ideal import NumberFieldOrderIdeal
     var('x')
-    restore('log')
 
     from pwn import *
     from sage.all import load
+    restore('log')
 
     from Crypto.Util.number import *
     from Crypto.Cipher import AES, DES, DES3, ARC4
@@ -53,6 +53,7 @@ with Progress() as _progress:
     from random import choice, choices, randint, randrange, getrandbits, randbytes, shuffle
     import sys
     import os
+    os.environ['TERM'] = 'xterm'
     import struct
     from os import urandom
     import re

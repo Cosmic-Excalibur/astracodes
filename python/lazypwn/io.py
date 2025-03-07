@@ -60,7 +60,7 @@ def getio(conn_creator, *args, **kwargs):
         frame.f_globals[ioctx.name] = ioctx.io = x
         return ioctx.io
     if conn_creator is remote:
-        if ioctx.debug_if_remote:
+        if not ioctx.debug_if_remote:
             ioctx.debugging = False
         if len(args) == 1 and isinstance(args[0], str) and ':' in args[0]:
             host, port = args[0].split(':')
@@ -79,10 +79,10 @@ recvline      = rl  = lambda *args, **kwargs: ioctx.io.recvline(*args, **kwargs)
 recvafter     = ra  = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recv(*args, **kwargs))[1]
 recvlineafter = rla = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recvline(*args, **kwargs))[1]
 
-def dbg(pausing = False):
+def dbg(*args, pausing = False, **kwargs):
     if not ioctx.debugging: return
     if ioctx.first_debug:
-        gdb.attach(ioctx.io)
+        gdb.attach(ioctx.io, *args, **kwargs)
         ioctx.first_debug = False
     if pausing or ioctx.pausing:
         pause()

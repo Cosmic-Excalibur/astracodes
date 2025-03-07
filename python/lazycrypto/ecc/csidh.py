@@ -1,7 +1,7 @@
-from sage.all import primes, prod, GF, EllipticCurve, pari, factor
+from sage.all import primes, prod, GF, EllipticCurve, pari, factor, ZZ
 from Crypto.Util.number import isPrime
 from lazymath.graycode import gray_code_int
-from utils.filter import filter_digits
+from utils.filter import filter_digits, map_relu
 from collections import namedtuple
 import os, pickle
 
@@ -35,6 +35,10 @@ p_14_17      = 4*prod(ells_14_17)   - 1
 ells_4_5     = [*primes(3,   4),   5]
 p_4_5        = 4*prod(ells_4_5)     - 1
 
+def to_montgomery(E):
+    F = E.base_ring().base_ring()
+    return E.change_ring(F).montgomery_model().a2()
+
 class CSIDH:
     def __init__(self, p, sanity_check = True, use_curve = False):
         if hasattr(p, '__int__'):
@@ -56,6 +60,7 @@ class CSIDH:
                 if any(not isPrime(l) for l in self.ells) or not isPrime(self.p):
                     raise ValueError("Malformed p for CSIDH.")
         self.F = GF(self.p)
+        self.F2 = GF(self.p**2)
         self._use_curve = use_curve
         self.base = EllipticCurve(self.F, [0, 0, 0, 1, 0])
     def __str__(self):
@@ -73,6 +78,33 @@ class CSIDH:
                     E = E.isogeny_codomain(P)
             E = E.quadratic_twist()
         return E.montgomery_model() if _use_curve else int(E.montgomery_model().a2())
+    def encrypt2(self, A, key, use_curve = None):
+        _use_curve = self._use_curve if use_curve is None else use_curve
+        E = A if _use_curve else EllipticCurve(self.F, [0, A, 0, 1, 0])
+        E = E.change_ring(self.F2)
+        keys = list(e for l, e in zip(self.ells, key))
+        keys = [list(map_relu(e*(1-2*r) for e in keys)) for r in range(2)]
+        for r in range(2):
+            key_ = keys[r]
+            while any(key_):
+                k = prod((l for l, e in zip(self.ells, key_) if e > 0))
+                while True:
+                    P = E.lift_x(self.F.random_element())
+                    if r != (P.y() in self.F):
+                        break
+                P *= (self.p + 1) // k
+                for i, (l, e) in enumerate(zip(self.ells, key_)):
+                    if e == 0:
+                        continue
+                    Q = k // l * P
+                    if not Q:
+                        continue
+                    Q._order = l
+                    phi = E.isogeny(Q)
+                    E, P = phi.codomain(), phi(P)
+                    key_[i] -= 1
+                    k //= l
+        return E.change_ring(self.F).montgomery_model() if _use_curve else int(to_montgomery(E))
     def decrypt(self, A, key, use_curve = None):
         _use_curve = self._use_curve if use_curve is None else use_curve
         E = A if _use_curve else EllipticCurve(self.F, [0, A, 0, 1, 0])
@@ -84,6 +116,33 @@ class CSIDH:
                     E = E.isogeny_codomain(P)
             E = E.quadratic_twist()
         return E.montgomery_model() if _use_curve else int(E.montgomery_model().a2())
+    def decrypt2(self, A, key, use_curve = None):
+        _use_curve = self._use_curve if use_curve is None else use_curve
+        E = A if _use_curve else EllipticCurve(self.F, [0, A, 0, 1, 0])
+        E = E.change_ring(self.F2)
+        keys = list(e for l, e in zip(self.ells, key))
+        keys = [list(map_relu(e*(2*r-1) for e in keys)) for r in range(2)]
+        for r in range(2):
+            key_ = keys[r]
+            while any(key_):
+                k = prod((l for l, e in zip(self.ells, key_) if e > 0))
+                while True:
+                    P = E.lift_x(self.F.random_element())
+                    if r != (P.y() in self.F):
+                        break
+                P *= (self.p + 1) // k
+                for i, (l, e) in enumerate(zip(self.ells, key_)):
+                    if e == 0:
+                        continue
+                    Q = k // l * P
+                    if not Q:
+                        continue
+                    Q._order = l
+                    phi = E.isogeny(Q)
+                    E, P = phi.codomain(), phi(P)
+                    key_[i] -= 1
+                    k //= l
+        return E.change_ring(self.F).montgomery_model() if _use_curve else int(to_montgomery(E))
     def walk_one(self, A, elkies, stride, use_curve = None):
         _use_curve = self._use_curve if use_curve is None else use_curve
         E = A if _use_curve else EllipticCurve(self.F, [0, A, 0, 1, 0])
@@ -146,8 +205,8 @@ class CSIDH:
                     keynow[victim] = walk1 if keynow[victim] == walk2 else walk2
                 collector(E.a2(), i if compress_tuple else tuple(keynow))
         return table if collector_is_none else None
-    def qfb(self, ell):
-        return pari.Qfb(ell, 2, (self.p + 1) // ell)
+    def qfb(self, ell, conductor = 2):
+        return pari.Qfb(ell, conductor, ZZ(self.p + 1) * conductor**2 / ell / 4)
 
 _database_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'csidh_database')
 
