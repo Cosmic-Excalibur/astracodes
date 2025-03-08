@@ -65,8 +65,7 @@ def getio(conn_creator, *args, **kwargs):
         if len(args) == 1 and isinstance(args[0], str) and ':' in args[0]:
             host, port = args[0].split(':')
             return _assign(conn_creator(host, int(port), **kwargs))
-    else:
-        return _assign(conn_creator(*args, **kwargs))
+    return _assign(conn_creator(*args, **kwargs))
 
 send                = lambda *args, **kwargs: ioctx.io.send(*args, **kwargs)
 recv                = lambda *args, **kwargs: ioctx.io.recv(*args, **kwargs)
