@@ -31,15 +31,13 @@ with Progress() as _progress:
     from sage.rings.number_field.order_ideal import NumberFieldOrderIdeal
     var('x')
 
-    from pwn import *
     from sage.all import load
-    restore('log')
 
     from Crypto.Util.number import *
     from Crypto.Cipher import AES, DES, DES3, ARC4
     from Crypto.Util.Padding import pad, unpad
     import hashlib
-    from hashlib import sha256, md5
+    from hashlib import sha256, md5, sha1
     import functools
     import itertools
     import tqdm
@@ -53,7 +51,6 @@ with Progress() as _progress:
     from random import choice, choices, randint, randrange, getrandbits, randbytes, shuffle
     import sys
     import os
-    os.environ['TERM'] = 'xterm'
     import struct
     from os import urandom
     import re
@@ -84,6 +81,7 @@ with Progress() as _progress:
     linsys = Linsys = LinSys = LinearizedSystem
     
     from lazypwn import *
+    restore('log')
     
     from pow.powsolver import PoWSolver
     powsolver = Powsolver = PoWSolver

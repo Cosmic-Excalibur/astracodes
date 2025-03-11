@@ -1,4 +1,8 @@
-from pwn import remote, process, context, gdb, pause
+import os
+os.environ['TERM'] = 'xterm'
+
+from pwn import *
+from time import sleep
 import sys
 
 context(os = 'linux', arch = 'amd64', log_level = 'debug')
@@ -56,6 +60,7 @@ def loglevelinfo():
 
 def getio(conn_creator, *args, **kwargs):
     frame = sys._getframe(1)
+    ioctx.first_debug = True
     def _assign(x):
         frame.f_globals[ioctx.name] = ioctx.io = x
         return ioctx.io
@@ -90,5 +95,3 @@ def die():
     if ioctx.io is not None:
         ioctx.io.close()
         ioctx.io = None
-
-suicide = jisatsu = die
