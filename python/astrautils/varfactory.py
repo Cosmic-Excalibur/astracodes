@@ -1,5 +1,5 @@
 from sage.all import var
-from utils.slicing import do_slice
+from astrautils.slicing import do_slice
 import sys, itertools
 
 class V:

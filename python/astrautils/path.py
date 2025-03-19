@@ -25,6 +25,8 @@ def toggle_win_wsl_abspath(abspath: str):
             return f'{former.upper()}:{path}'
     raise ValueError(f'Invalid absolute path "{abspath}".')
 
+twwa = toggle_wsl_win_abspath = toggle_win_wsl_abspath
+
 def is_wsl_abspath(abspath):
     abspath = abspath.strip()
     if abspath.startswith(_wsl_prefix):

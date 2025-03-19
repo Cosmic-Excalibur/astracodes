@@ -241,8 +241,8 @@ if __name__ == '__main__':
     from rich.progress import track
     import random
     from itertools import zip_longest
-    from utils.timeit import ticktock
-    from utils.gg import GG as gg
+    from astrautils.timeit import ticktock
+    from astrautils.gg import GG as gg
     n = 100
     P = lambda p = 1/4: random.random() <= p
     def random_slice(n, p = 1/4):

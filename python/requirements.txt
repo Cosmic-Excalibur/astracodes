@@ -1,0 +1,14 @@
+gf2bv @ https://github.com/maple3142/gf2bv/
+gmpy2
+httpx
+ipython
+pwntools
+pycryptodome
+qiskit
+qiskit-aer
+randcrack
+requests
+rich
+tqdm
+z3-solver
+crccheck

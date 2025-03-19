@@ -1,4 +1,4 @@
-from utils.commonstrings import *
+from astrautils.commonstrings import *
 import collections
 
 def is_asciiprintable(s):

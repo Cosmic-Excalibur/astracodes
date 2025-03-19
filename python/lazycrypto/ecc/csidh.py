@@ -1,7 +1,7 @@
 from sage.all import primes, prod, GF, EllipticCurve, pari, factor, ZZ
 from Crypto.Util.number import isPrime
 from lazymath.graycode import gray_code_int
-from utils.filter import filter_digits, map_relu
+from astrautils.filter import filter_digits, map_relu
 from collections import namedtuple
 import os, pickle
 

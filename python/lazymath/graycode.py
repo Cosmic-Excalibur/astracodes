@@ -1,4 +1,4 @@
-from utils.bitstruct import int_to_bits, int_to_bitstr, int_to_poly
+from astrautils.bitstruct import int_to_bits, int_to_bitstr, int_to_poly
 
 def gray_code_int(n):
     for i in range(1 << n):

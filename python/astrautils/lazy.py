@@ -1,4 +1,4 @@
-from utils.timeit import ticktock, set_ticktock_log_func
+from astrautils.timeit import ticktock, set_ticktock_log_func
 from logger import astra_logger
 alg = astra_logger
 
@@ -15,7 +15,7 @@ import sys
 _import_cnt = 0
 
 with Progress() as _progress:
-    _startup_task = _progress.add_task("Preparing...", total = 1751)
+    _startup_task = _progress.add_task("Preparing...", total = 1756)
     class _Watcher:
         @classmethod
         def find_module(cls, name, path, target = None):
@@ -62,6 +62,7 @@ with Progress() as _progress:
     gf2linsys = LinearSystem
     from gf2bv.crypto.mt import MT19937
     from urllib.parse import quote, unquote
+    import difflib
 
 
     
@@ -86,26 +87,7 @@ with Progress() as _progress:
     from pow.powsolver import PoWSolver
     powsolver = Powsolver = PoWSolver
     
-    from utils.bitstruct import *
-    from utils.bool import *
-    from utils.filter import *
-    from utils.gg import GG, set_hp, get_hp
-    gg = goodgame = GG
-    from utils.path import *
-    from utils.peek import peek, peek_print
-    peekprint = peek_print
-    from utils.prgen import *
-    from utils.printname import *
-    from utils.shuffled import *
-    from utils import slicing
-    from utils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter, long_range
-    set_fast_cutter_thres = sfct = set_fast_cutter_threshold
-    get_fast_cutter_thres = gfct = get_fast_cutter_threshold
-    from utils.timeit import *
-    stlf = set_ticktock_log_func
-    from utils import varfactory
-    from utils.varfactory import V
-    from utils.wrapper import *
+    from astrautils.all import *
     
     
     

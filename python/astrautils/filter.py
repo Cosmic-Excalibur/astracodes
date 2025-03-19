@@ -1,4 +1,4 @@
-from utils.commonstrings import *
+from astrautils.commonstrings import *
 
 
 dict_map = lambda x, y: map(lambda z: x[z], y)
@@ -22,6 +22,7 @@ filter_hexlower    = lambda x: filter(lambda y: y in hexlower    if isinstance(y
 filter_hexupper    = lambda x: filter(lambda y: y in hexupper    if isinstance(y, str) else y in hexupper_b, x)
 filter_hexdigits   = lambda x: filter(lambda y: y in hexdigits   if isinstance(y, str) else y in hexdigits_b, x)
 filter_punctuation = lambda x: filter(lambda y: y in punctuation if isinstance(y, str) else y in punctuation_b, x)
+filter_printable   = lambda x: filter(lambda y: y in printable   if isinstance(y, str) else y in printable_b, x)
 
 filter_contains = lambda x, y: filter(lambda z: x in z, y)
 filter_in       = lambda x, y: filter(lambda z: z in x, y)
@@ -36,6 +37,7 @@ unfilter_hexlower    = lambda x: filter(lambda y: y not in hexlower    if isinst
 unfilter_hexupper    = lambda x: filter(lambda y: y not in hexupper    if isinstance(y, str) else y not in hexupper_b, x)
 unfilter_hexdigits   = lambda x: filter(lambda y: y not in hexdigits   if isinstance(y, str) else y not in hexdigits_b, x)
 unfilter_punctuation = lambda x: filter(lambda y: y not in punctuation if isinstance(y, str) else y not in punctuation_b, x)
+unfilter_printable   = lambda x: filter(lambda y: y not in printable   if isinstance(y, str) else y not in printable_b, x)
 
 unfilter_contains = lambda x, y: filter(lambda z: x not in z, y)
 unfilter_in       = lambda x, y: filter(lambda z: z not in x, y)

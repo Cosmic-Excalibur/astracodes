@@ -1,5 +1,5 @@
 from lazycrypto.lattice.lll_cvp import reduction
-from utils.prgen import prgen
+from astrautils.prgen import prgen
 from sage.all import ZZ, ceil, matrix
 import logger.astra_logger as alg
 

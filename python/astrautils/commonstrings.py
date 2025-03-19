@@ -8,6 +8,7 @@ hexlower = '0123456789abcdef'
 hexupper = '0123456789ABCDEF'
 hexdigits = string.hexdigits
 punctuation = string.punctuation
+printable = string.printable
 
 digits_b = digits.encode('utf-8')
 uppercase_b = uppercase.encode('utf-8')
@@ -17,3 +18,4 @@ hexlower_b = hexlower.encode('utf-8')
 hexupper_b = hexupper.encode('utf-8')
 hexdigits_b = hexdigits.encode('utf-8')
 punctuation_b = punctuation.encode('utf-8')
+printable_b = printable.encode('utf-8')

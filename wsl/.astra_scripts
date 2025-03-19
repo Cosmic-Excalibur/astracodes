@@ -159,34 +159,24 @@ __NEW_FUNC sageipython "interactively run a \`.sage\` file." "<file>"
 
 __NEW_ALIAS sageipy "sageipython"
 
-__SETENV_ASTRAPYTHON() {
-    local PYTHONPATH0=$PYTHONPATH
-	export PYTHONPATH="$__ASTRAPYTHON:$PYTHONPATH"
-    $@
-    export PYTHONPATH=PYTHONPATH0
-}
-
+export PYTHONPATH="$__ASTRAPYTHON:$PYTHONPATH"
 export sageipython
 
-__NEW_ALIAS astrapython "__SETENV_ASTRAPYTHON python"
-
-__NEW_ALIAS astrapy astrapython
-
-__NEW_ALIAS astraipython "__SETENV_ASTRAPYTHON ipython"
-
-__NEW_ALIAS astraipy astraipython
-
-__NEW_ALIAS astrasage "__SETENV_ASTRAPYTHON sage"
-
-__NEW_ALIAS astrasageipython "__SETENV_ASTRAPYTHON sageipython"
-
-__NEW_ALIAS astrasageipy "astrasageipython"
+cdwin() {
+    local path
+    path=$(python -c "exec('''from utils.path import *\nprint(twwa('$@'))''')")
+    cd "$path"
+}
 
 
 
+if [ ! $__SAGE104_FLAG ]
+then
+    echo -e "[\x1b[34;1m*\x1b[0m] Activating environment \"\x1b[33;1msage104\x1b[0m\"".
+    sage104
+    __SAGE104_FLAG=ok
+fi
 
-echo -e "[\x1b[34;1m*\x1b[0m] Activating environment \"\x1b[33;1msage104\x1b[0m\"".
-sage104
 
 
 

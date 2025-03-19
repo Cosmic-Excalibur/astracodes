@@ -1,9 +1,11 @@
-import os
+import os, sys, re
 os.environ['TERM'] = 'xterm'
 
 from pwn import *
 from time import sleep
-import sys
+from pow.powsolver import PoWSolver
+powsolver = Powsolver = PoWSolver
+from astrautils.lite import *
 
 context(os = 'linux', arch = 'amd64', log_level = 'debug')
 
@@ -83,6 +85,8 @@ recvline      = rl  = lambda *args, **kwargs: ioctx.io.recvline(*args, **kwargs)
 recvafter     = ra  = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recv(*args, **kwargs))[1]
 recvlineafter = rla = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recvline(*args, **kwargs))[1]
 
+se = lambda x, *args, **kwargs: str(x).encode(*args, **kwargs)
+
 def dbg(*args, pausing = False, **kwargs):
     if not ioctx.debugging: return
     if ioctx.first_debug:
@@ -95,3 +99,17 @@ def die():
     if ioctx.io is not None:
         ioctx.io.close()
         ioctx.io = None
+
+def protect_ptr(ptr, addr = None):
+    if addr is None: addr = ptr
+    return ptr ^ (addr >> 12)
+
+def hack_ptr(ptr, delta = 0):
+    assert delta >= 0
+    ptr ^= delta >> 12
+    ptr ^= ptr   >> 12
+    ptr ^= ptr   >> 24
+    ptr ^= ptr   >> 48
+    return ptr
+
+

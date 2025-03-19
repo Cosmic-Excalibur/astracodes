@@ -1,7 +1,7 @@
 from sage.all import matrix, vector, Zmod, ZZ, block_matrix, diagonal_matrix
 from lazycrypto.lattice.lll_cvp import reduction
 from logger.astra_logger import *
-from utils.timeit import timeit
+from astrautils.timeit import timeit
 
 def random_lwe_uniform(nrows, ncols, p, Abits, xbits, ebits):
     Zp = Zmod(p)

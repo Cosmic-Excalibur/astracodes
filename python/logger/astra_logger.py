@@ -33,6 +33,7 @@ bad = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{red_("-")}
 info = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{blue_("*")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)
 warn = lambda *args, end = "\n", sep = "\n    ", **kwargs: _output(f'[{yellow_("!")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs)
 debug = lambda *args, end = "\n", sep = "\n        ", **kwargs: _output(f'[{gray_("DEBUG")}] ' + sep.join(str(arg) for arg in args) + end, end = "", **kwargs) if DEBUGGING else None
+printlines = lambda *args, end = "\n", sep = "\n": _output() if len(args) == 0 else _output(*args[0], end = end, sep = sep) if hasattr(args[0], '__iter__') else _output(*args, end = end, sep = sep)
 def gets(*args, header = True, end = "", sep = "\n    "):
     _output((f'[{gray_("·")}] ' if header else '') + sep.join(str(arg) for arg in args) + end, end = "")
     return _input()
