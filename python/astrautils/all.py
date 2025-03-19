@@ -4,6 +4,7 @@ from astrautils.counter import *
 from astrautils.filter import *
 from astrautils.gg import GG, set_hp, get_hp
 gg = goodgame = GG
+from astrautils.int import *
 from astrautils.path import *
 from astrautils.peek import peek, peek_print
 peekprint = peek_print

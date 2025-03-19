@@ -17,6 +17,7 @@ is_hexlower    = lambda x: all(y in hexlower    for y in x) if isinstance(x, str
 is_hexupper    = lambda x: all(y in hexupper    for y in x) if isinstance(x, str) else all(y in hexupper_b    for y in x)
 is_hexdigits   = lambda x: all(y in hexdigits   for y in x) if isinstance(x, str) else all(y in hexdigits_b   for y in x)
 is_punctuation = lambda x: all(y in punctuation for y in x) if isinstance(x, str) else all(y in punctuation_b for y in x)
+is_printable   = lambda x: all(y in printable   for y in x) if isinstance(x, str) else all(y in printable_b   for y in x)
 
 is_not_none        = lambda x: x is not None
 is_not_digits      = lambda x: any(y not in digits      for y in x) if isinstance(x, str) else any(y not in digits_b      for y in x)
@@ -27,6 +28,7 @@ is_not_hexlower    = lambda x: any(y not in hexlower    for y in x) if isinstanc
 is_not_hexupper    = lambda x: any(y not in hexupper    for y in x) if isinstance(x, str) else any(y not in hexupper_b    for y in x)
 is_not_hexdigits   = lambda x: any(y not in hexdigits   for y in x) if isinstance(x, str) else any(y not in hexdigits_b   for y in x)
 is_not_punctuation = lambda x: any(y not in punctuation for y in x) if isinstance(x, str) else any(y not in punctuation_b for y in x)
+is_not_printable   = lambda x: any(y not in printable   for y in x) if isinstance(x, str) else any(y not in printable_b   for y in x)
 
 
 def is_permutation_of(src, tgt):
