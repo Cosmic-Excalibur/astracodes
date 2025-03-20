@@ -37,13 +37,14 @@ You will notice that most of these are some condesenation of python codes, for e
 ```python
 import string
 printable = string.printable[:-6].encode('utf-8')
-*blocks, = [printable[i:i+4] for i in range(0,len(printable),4)]
+*blocks, = [printable[i:i+4] for i in range(0,28,4)] + [printable[i:i+3] for i in range(28,len(printable),3)]
 print(*(x.hex() for x in blocks), sep = '\n')
+# print('\n'.join(x.hex() for x in blocks))
 ```
 as
 ```python
 from astrautils.lite import *
-*blocks, = cutter(printable_b[:-6])[::4]
+*blocks, = cutter(printable_b[:-6])[:28:4, 28::3]
 alg.printlines(map(b2h, blocks))
 ```
 I write these mainly because I'm such a couch-potato coder (CTFer?) and I'm done with typing stuff like
