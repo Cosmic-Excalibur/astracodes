@@ -1,6 +1,7 @@
 from astrautils.bitstruct import *
 from astrautils.bool import *
 from astrautils.counter import *
+from astrautils.factorization import *
 from astrautils.filter import *
 from astrautils.gg import GG, set_hp, get_hp
 gg = goodgame = GG

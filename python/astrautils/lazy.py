@@ -79,6 +79,7 @@ with Progress() as _progress:
     from lazycrypto.lattice.primal_attack import primal_attack
     from lazycrypto.lattice.small_roots import small_roots
     
+    from lazymath import babydiop
     from lazymath.graycode import *
     from lazymath.linsys import LinearizedSystem
     linsys = Linsys = LinSys = LinearizedSystem

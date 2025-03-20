@@ -47,3 +47,12 @@ filter_false = unfilter_bool
 filter_notin = filter_not_in = unfilter_in
 filter_ni = filter_contains
 filter_notni = filter_not_ni = filter_notcontains = filter_not_contains = unfilter_contains
+
+proj = lambda i: lambda arr: arr[i]
+
+proj0 = proj_0 = lambda arr: arr[0]
+proj1 = proj_1 = lambda arr: arr[1]
+proj2 = proj_2 = lambda arr: arr[2]
+proj3 = proj_3 = lambda arr: arr[3]
+proj4 = proj_4 = lambda arr: arr[4]
+proj5 = proj_5 = lambda arr: arr[5]
