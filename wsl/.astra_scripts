@@ -164,8 +164,8 @@ export sageipython
 
 cdwin() {
     local path
-    path=$(python -c "exec('''from astrautils.path import *\nprint(twwa(r'$@'))''')")
-    cd "$path"
+    path2=$(python -c "path=r'''$@''';exec('''from astrautils.path import *\\nprint(twwa(path))''',globals())")
+    cd "$path2"
 }
 
 
