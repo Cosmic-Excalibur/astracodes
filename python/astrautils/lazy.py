@@ -39,7 +39,9 @@ with Progress() as _progress:
     import hashlib
     from hashlib import sha256, md5, sha1
     import functools
+    from functools import partial
     import itertools
+    from itertools import permutations, combinations, product, chain
     import tqdm
     from rich.progress import track as track
     richtrack = track

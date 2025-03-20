@@ -26,24 +26,32 @@ _HEX_2_BITSTR_TABLE = {
 _DEFAULT_BYTE_ENDIAN = 'msb'
 _DEFAULT_BIT_ENDIAN  = 'msb'
 _DEFAULT_POLY_ENDIAN = 'msb'
+_DEFAULT_ADIC_ENDIAN = 'lsb'
 
 def _check_endian(endian):
     if endian not in ('big', 'little', 'lsb', 'msb'):
         raise ValueError(f"Unknown endian '{endian}'.")
 
-def set_default_endians(byte_endian = 'msb', bit_endian = 'msb', poly_endian = 'msb'):
-    global _DEFAULT_BYTE_ENDIAN, _DEFAULT_BIT_ENDIAN, _DEFAULT_POLY_ENDIAN
+def set_default_endians(byte_endian = 'msb', bit_endian = 'msb', poly_endian = 'msb', adic_endian = 'lsb'):
+    global _DEFAULT_BYTE_ENDIAN, _DEFAULT_BIT_ENDIAN, _DEFAULT_POLY_ENDIAN, _DEFAULT_ADIC_ENDIAN
     _check_endian(byte_endian)
     _check_endian(bit_endian)
     _check_endian(poly_endian)
+    _check_endian(adic_endian)
     _DEFAULT_BYTE_ENDIAN = byte_endian
-    _DEFAULT_BIT_ENDIAN = bit_endian
+    _DEFAULT_BIT_ENDIAN  = bit_endian
     _DEFAULT_POLY_ENDIAN = poly_endian
+    _DEFAULT_ADIC_ENDIAN = adic_endian
 
 sde = set_default_endians
 
 def get_default_endians():
-    return {'byte': _DEFAULT_BYTE_ENDIAN, 'bit': _DEFAULT_BIT_ENDIAN, 'poly': _DEFAULT_POLY_ENDIAN}
+    return {
+        'byte': _DEFAULT_BYTE_ENDIAN,
+        'bit':  _DEFAULT_BIT_ENDIAN,
+        'poly': _DEFAULT_POLY_ENDIAN,
+        'adic': _DEFAULT_ADIC_ENDIAN
+    }
 
 gde = get_default_endians
 
@@ -56,7 +64,10 @@ def get_default_bit_endian():
 def get_default_poly_endian():
     return _DEFAULT_POLY_ENDIAN
 
-def int_to_bytes(int_, blocksize = 0, endian = None):
+def get_default_adic_endian():
+    return _DEFAULT_ADIC_ENDIAN
+
+def int_to_bytes(int_, blocksize = 0, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(endian)
     res = long_to_bytes(int_, blocksize = blocksize)
@@ -64,14 +75,14 @@ def int_to_bytes(int_, blocksize = 0, endian = None):
 
 i2b = int_to_bytes
 
-def bytes_to_int(bytes_, endian = None):
+def bytes_to_int(bytes_, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(endian)
     return bytes_to_long(bytes_) if endian in ('big', 'msb') else b2l(bytes_[::-1])
 
 b2i = bytes_to_int
 
-def bytes_to_bitstr(bytes_, byte_endian = None, bit_endian = None):
+def bytes_to_bitstr(bytes_, byte_endian = None, bit_endian = None, **kwargs):
     if byte_endian is None: byte_endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(byte_endian)
     if bit_endian is None: bit_endian = _DEFAULT_BIT_ENDIAN
@@ -81,7 +92,7 @@ def bytes_to_bitstr(bytes_, byte_endian = None, bit_endian = None):
 
 b2bis = bytes_to_bitstr
 
-def bytes_to_bits(bytes_, byte_endian = None, bit_endian = None):
+def bytes_to_bits(bytes_, byte_endian = None, bit_endian = None, **kwargs):
     if byte_endian is None: byte_endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(byte_endian)
     if bit_endian is None: bit_endian = _DEFAULT_BIT_ENDIAN
@@ -90,7 +101,7 @@ def bytes_to_bits(bytes_, byte_endian = None, bit_endian = None):
 
 b2bi = bytes_to_bits
 
-def bitstr_to_bytes(bitstr, byte_endian = None, bit_endian = None):
+def bitstr_to_bytes(bitstr, byte_endian = None, bit_endian = None, **kwargs):
     if byte_endian is None: byte_endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(byte_endian)
     if bit_endian is None: bit_endian = _DEFAULT_BIT_ENDIAN
@@ -112,7 +123,7 @@ def bitstr_to_bytes(bitstr, byte_endian = None, bit_endian = None):
 
 bis2b = bitstr_to_bytes
 
-def int_to_bitstr(int_, pad = None, endian = None):
+def int_to_bitstr(int_, pad = None, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BIT_ENDIAN
     else: _check_endian(endian)
     res = f'{int_:b}'
@@ -121,31 +132,31 @@ def int_to_bitstr(int_, pad = None, endian = None):
 
 i2bis = int_to_bitstr
 
-def int_to_bits(int_, pad = None, endian = None):
+def int_to_bits(int_, pad = None, endian = None, **kwargs):
     return list(map(int, int_to_bitstr(int_, pad = pad, endian = endian)))
 
 i2bi = int_to_bits
 
-def bitstr_to_int(bitstr, endian = None):
+def bitstr_to_int(bitstr, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BIT_ENDIAN
     else: _check_endian(endian)
     return int(bitstr, 2) if endian in ('big', 'msb') else int(bitstr[::-1], 2)
 
 bis2i = bitstr_to_int
 
-def bits_to_int(bits, endian = None):
+def bits_to_int(bits, endian = None, **kwargs):
     return bitstr_to_int(''.join(map(str, bits)), endian = endian)
 
 bi2i = bits_to_int
 
-def bytes_to_hex(bytes_, endian = None):
+def bytes_to_hex(bytes_, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(endian)
     return bytes_.hex() if endian in ('big', 'msb') else bytes_[::-1].hex()
 
 b2h = bytes_to_hex
 
-def hex_to_bytes(hex_, endian = None):
+def hex_to_bytes(hex_, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BYTE_ENDIAN
     else: _check_endian(endian)
     if len(hex_) & 1:
@@ -155,18 +166,18 @@ def hex_to_bytes(hex_, endian = None):
 
 h2b = hex_to_bytes
 
-def hex_to_int(hex_):
+def hex_to_int(hex_, **kwargs):
     return int(hex_, 16)
 
 h2i = hex_to_int
 
-def int_to_hex(int_):
+def int_to_hex(int_, **kwargs):
     res = f'{int_:x}'
     return '0' + res if len(res) & 1 else res
 
 i2h = int_to_hex
 
-def hex_to_bitstr(hex_, endian = None):
+def hex_to_bitstr(hex_, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BIT_ENDIAN
     else: _check_endian(endian)
     res = ''.join(_HEX_2_BITSTR_TABLE[i] for i in hex_)
@@ -174,7 +185,7 @@ def hex_to_bitstr(hex_, endian = None):
 
 h2bis = hex_to_bitstr
 
-def hex_to_bits(hex_, endian = None):
+def hex_to_bits(hex_, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_BIT_ENDIAN
     else: _check_endian(endian)
     res = ''.join(_HEX_2_BITSTR_TABLE[i] for i in hex_)
@@ -182,38 +193,57 @@ def hex_to_bits(hex_, endian = None):
 
 h2bi = hex_to_bits
 
-def int_to_poly(int_, order = 2, endian = None, ring = None):
-    if endian is None: endian = _DEFAULT_POLY_ENDIAN
+def int_to_adic(n, base = 2, pad = None, endian = None, **kwargs):
+    if endian is None: endian = _DEFAULT_ADIC_ENDIAN
     else: _check_endian(endian)
-    if ring is None and order is not None:
-        ring = Zmod(order)['x']
-    elif ring is not None and order is None:
-        order = ring.base_ring().order()
-    elif ring is None and order is None:
-        raise ValueError("Specify the order.")
-    if order == 2:
-        return ring(list(reversed(f'{abs(int_):b}'))) if endian in ('big', 'msb') else ring(list(f'{abs(int_):b}'))
-    elif order is oo:
-        raise ValueError("Infinite order.")
-    elif order <= 1:
-        raise ValueError("Order must be > 1.")
+    if n < 0:
+        raise ValueError("Integer cannot be negative.")
+    elif base <= 1:
+        raise ValueError("Base must be > 1.")
     res = []
-    s = sign(int_)
-    int_ *= s
-    while int_:
-        int_, rem = divmod(int_, order)
-        res.append(rem * s)
-    return ring(res) if endian in ('big', 'msb') else ring(res[::-1])
+    if pad is None: pad = 0
+    while n:
+        if endian in ('little', 'lsb'):
+            res.append(n % base)
+        else:
+            res.insert(0, n % base)
+        n //= base
+        pad -= 1
+    if pad > 0:
+        if endian in ('little', 'lsb'):
+            res += [0] * pad
+        else:
+            res = [0] * pad + res
+    return res
+
+i2a = int_to_adic
+
+def adic_to_int(arr, base = 2, endian = None, **kwargs):
+    if endian is None: endian = _DEFAULT_ADIC_ENDIAN
+    else: _check_endian(endian)
+    if base <= 1:
+        raise ValueError("Base must be > 1.")
+    res = 0
+    k = 1
+    for i in arr if endian in ('little', 'lsb') else reversed(arr):
+        if i >= base or i < 0:
+            raise ValueError(f'Invalid component "{i}".')
+        res += k*i
+        k *= base
+    return res
+
+a2i = adic_to_int
 
 def _factory(a2i, i2b):
-    return lambda x: i2b(a2i(x))
+    return lambda x, *args, **kwargs: i2b(a2i(x, *args, **kwargs), *args, **kwargs)
 
 _abbr_table = {
     'int':    'i',
     'bits':   'bi',
     'bitstr': 'bis',
     'bytes':  'b',
-    'hex':    'h'
+    'hex':    'h',
+    'adic':   'a'
 }
 
 for (_a, _abbr_a), (_b, _abbr_b) in itertools.permutations(_abbr_table.items(), 2):
