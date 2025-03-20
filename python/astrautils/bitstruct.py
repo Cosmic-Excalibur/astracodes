@@ -294,6 +294,7 @@ p2i = poly_to_int
 def int_to_adic(n, base = 2, pad = None, endian = None, **kwargs):
     if endian is None: endian = _DEFAULT_ADIC_ENDIAN
     else: _check_endian(endian)
+    n = int(n)
     if n < 0:
         raise ValueError("Integer cannot be negative.")
     elif base <= 1:
@@ -324,6 +325,7 @@ def adic_to_int(arr, base = 2, endian = None, **kwargs):
     res = 0
     k = 1
     for i in arr if endian in ('little', 'lsb') else reversed(arr):
+        i = int(i)
         if i >= base or i < 0:
             raise ValueError(f'Invalid component "{i}".')
         res += k*i
