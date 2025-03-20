@@ -25,7 +25,7 @@ Call `astrahelp` for a comprehensive list of available commands.
 
 ## `/python`
 
-Python code hub. Source [`/wsl/.astra_scripts`](#.astra_scripts) to get import paths right.
+<s>Mutated</s> Python code hub. Source [`/wsl/.astra_scripts`](#.astra_scripts) to get import paths right.
 
 A [SageMath 10.4 environment](https://doc.sagemath.org/html/en/installation/index.html#windows) named `sage104` in conda is required.
 

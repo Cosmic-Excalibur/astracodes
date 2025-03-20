@@ -2,6 +2,7 @@ gf2bv @ https://github.com/maple3142/gf2bv/
 gmpy2
 httpx
 ipython
+owiener
 pwntools
 pycryptodome
 qiskit
