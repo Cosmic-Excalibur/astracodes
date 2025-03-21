@@ -1,16 +1,74 @@
 from astrautils.commonstrings import *
+from itertools import zip_longest
 
+
+def maps(maps_, *args):
+    '''
+    Generate a workflow of functions chaining **the first argument**.
+    
+    Example:
+    
+    >>> list(maps([lstrip, rstrip], [' bbbastraccc   ', '!*@@&@#UD*'], [['b ', '!*']], [[' c', '*D']]))
+    ['astra', '@@&@#U']
+    
+    >>> list(maps([(lstrip, ['b ', '!*']), (rstrip, [' c', '*D'])], [' bbbastraccc   ', '!*@@&@#UD*']))
+    ['astra', '@@&@#U']
+    
+    which is equivalent to
+    
+    >>> a = map(lstrip, [' bbbastraccc   ', '!*@@&@#UD*'], ['b ', '!*'])
+    >>> b = map(rstrip, a, [' c', '*D'])
+    >>> list(b)
+    ['astra', '@@&@#U']
+    
+    Should not be used for filter objects below in this file, but instead use sth like
+    
+    >>> ''.join(filter_uppercase(filter_letters('aaSSSa  12lpedplleplLPLPELPSOdedwo!@*@d')))
+    'SSSLPLPELPSO'
+    
+    Should not be used for map objects below in this file, for example,
+    
+    >>> list(map_lstrip(map_rstrip(['  lwqsqwslpwsp ', ' ookedwlll  '], 'l '), 'o '))
+    ['lwqsqwslpwsp', 'kedw']
+    
+    `map_lstrip`, `map_rstrip` have fixed stripping characters.
+    '''
+    argiter = iter(args)
+    res = next(argiter, ())
+    for map_, arg in zip_longest(maps_, argiter, fillvalue = ()):
+        if map_ == (): break
+        if hasattr(map_, '__iter__'):
+            if arg != ():
+                raise ValueError("Ambiguous extra arguments.")
+            map_, *arg = map_
+        res = map(map_, res, *arg)
+    return res
 
 dict_map = lambda x, y: map(lambda z: x[z], y)
 dict_map_get = lambda x, y, default = None: map(lambda z: x.get(z, default), y)
 
-map_strip = lambda x, *args, **kwargs: map(lambda y: y.strip(*args, **kwargs), x)
-map_relu  = lambda x: map(lambda y: y if y >= 0 else 0, x)
+strip  = lambda x, *args, **kwargs: x.strip(*args, **kwargs)
+lstrip = lambda x, *args, **kwargs: x.lstrip(*args, **kwargs)
+rstrip = lambda x, *args, **kwargs: x.rstrip(*args, **kwargs)
 
-filter_strip     = lambda x, *args, **kwargs: filter(lambda y: y.strip(*args, **kwargs), x)
-filter_map_strip = lambda x, *args, **kwargs: map_strip(filter(lambda y: y.strip(*args, **kwargs), x), *args, **kwargs)
-filter_odd       = lambda x: filter(lambda y: int(y) % 2, x)
-filter_even      = lambda x: filter(lambda y: not int(y) % 2, x)
+map_strip  = lambda x, *args, **kwargs: map(lambda y: y.strip(*args, **kwargs), x)
+map_lstrip = lambda x, *args, **kwargs: map(lambda y: y.lstrip(*args, **kwargs), x)
+map_rstrip = lambda x, *args, **kwargs: map(lambda y: y.rstrip(*args, **kwargs), x)
+map_relu   = lambda x: map(lambda y: y if y >= 0 else 0, x)
+
+def wordify(text, lstrip_chars = None, rstrip_chars = None):
+    if lstrip_chars is not None: text = text.lstrip(lstrip_chars)
+    if rstrip_chars is not None: text = text.rstrip(rstrip_chars)
+    return filter_bool(text.split())
+
+filter_strip      = lambda x, *args, **kwargs: filter(lambda y: y.strip(*args, **kwargs), x)
+filter_lstrip     = lambda x, *args, **kwargs: filter(lambda y: y.lstrip(*args, **kwargs), x)
+filter_rstrip     = lambda x, *args, **kwargs: filter(lambda y: y.rstrip(*args, **kwargs), x)
+filter_map_strip  = lambda x, *args, **kwargs: map_strip(filter(lambda y: y.strip(*args, **kwargs), x), *args, **kwargs)
+filter_map_lstrip = lambda x, *args, **kwargs: map_lstrip(filter(lambda y: y.lstrip(*args, **kwargs), x), *args, **kwargs)
+filter_map_rstrip = lambda x, *args, **kwargs: map_rstrip(filter(lambda y: y.rstrip(*args, **kwargs), x), *args, **kwargs)
+filter_odd        = lambda x: filter(lambda y: int(y) % 2, x)
+filter_even       = lambda x: filter(lambda y: not int(y) % 2, x)
 
 filter_none        = lambda x: filter(lambda y: y is None, x)
 filter_bool        = lambda x: filter(lambda y: bool(y), x)

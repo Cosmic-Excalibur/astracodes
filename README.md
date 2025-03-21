@@ -25,15 +25,15 @@ Call `astrahelp` for a comprehensive list of available commands.
 
 ## `/python`
 
-<s>Mutated</s> Python code hub. Source [`/wsl/.astra_scripts`](#.astra_scripts) to get import paths right.
+A collection of <s>Mutated</s> Python modules. Source [`/wsl/.astra_scripts`](#.astra_scripts) to incorporate this folder for imports.
 
-A [SageMath 10.4 environment](https://doc.sagemath.org/html/en/installation/index.html#windows) named `sage104` in conda is required.
+A [SageMath 10.4](https://doc.sagemath.org/html/en/installation/index.html#windows) environment named `sage104` in conda is required.
 
 A list of required external modules can be found in `/python/requirements.txt`.
 
 Run `from astrautils.lazy import *` (slow!) to pre-import some frequently used modules.
 
-You will notice that most of these are some condesenation of python codes, for example, you may rewrite
+You will notice that some of these are condensations or abbreviations of Python codes, for example, you may rewrite
 ```python
 import string
 printable = string.printable[:-6].encode('utf-8')
@@ -47,23 +47,39 @@ from astrautils.lite import *
 *blocks, = cutter(printable_b[:-6])[:28:4, 28::3]
 alg.printlines(map(b2h, blocks))
 ```
-I write these mainly because I'm such a couch-potato coder (CTFer?) and I'm done with typing stuff like
+And some are for specialized usage, e.g.
 ```python
-from Crypto.Util.number import *
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-from hashlib import sha256, md5
-import base64
-# ...
-pt = long_to_bytes(int(base64.b64decode(b'MzE2OTg0OTQ5Njg3NTU3NTY5NjE1MTI3NTk2Nzc=').decode()))
+from lazycrypto.lattice.primal_attack import *
+(A, b), (x, e) = random_lwe_uniform(10, 4, 65537, 16, 16, 2)
+e_ = next(primal_attack(65537, A, b, 2))
+assert err_oracle(e_, 2) and e == e_
 ```
-or stuff like
-```python
-from pwn import *
-r = process("./pwn")
-gdb.attach(r)
-pause()
-r.sendlineafter(b'name: ', b'a'*(0x40+8) + p64(backdoor))
-r.interactive()
-```
-over & over again :\(
+
+### `astrautils`
+
+| Module | Description |
+| ------ | ----------- |
+| all    | Everything in `astrautils`. |
+| bitstruct | Interconversions among integers, bytes, hex strings, bit strings, bit lists, polynomials and n-adic integers. |
+| bitstruct_lite | Interconversions among integers, bytes, hex strings, bit strings, bit lists, and n-adic integers. |
+| bool | Dichotomous judgers. |
+| commonstrings | Commonly used strings. |
+| counter | Lightweight counters. |
+| factorization | Utilities for SageMath `Factorization` object. |
+| filter | `filter`, `map` objects and their pipelining. |
+| gg | Short for Good Game :\) Force your program to exit and say goodgame! |
+| int | Python `int` utilities. |
+| lazy | (Maybe) frequently used stuff in Python and even Sage, so quite a lot :\) |
+| lite | Lightweight version of `astrautils.all`. |
+| path | OS path handling. |
+| peek | Find a needle in a haystack :\) |
+| prgen | Short for Polynomial Ring GENerators. |
+| printname | Printing both variable names and values. One shot for all. |
+| shuffled | -ed version of `random.shuffle` just like `sorted` and `sort`. |
+| slicing | Automatic cake knives :\) |
+| str | Python `str` utilities. |
+| timeit | Time it! |
+| varfactory | Variable factory objects. |
+| wrapper | Object (`str`, `bytes`, ...) decorators. |
+
+

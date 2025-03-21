@@ -14,6 +14,7 @@ from astrautils import slicing
 from astrautils.slicing import do_slice, set_fast_cutter_threshold, get_fast_cutter_threshold, cutter, long_range
 set_fast_cutter_thres = sfct = set_fast_cutter_threshold
 get_fast_cutter_thres = gfct = get_fast_cutter_threshold
+from astrautils.str import *
 from astrautils.timeit import *
 stlf = set_ticktock_log_func
 from astrautils.wrapper import *
