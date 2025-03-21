@@ -6,10 +6,10 @@ by **@Astrageldon**
 Latest update: Wed Mar 19 20:05:31 CST 2025
 
 
-## `/wsl`
+# `/wsl`
 Scripts intended for use in a WSL.
 
-### `/wsl/.astra_scripts`<span id=".astra_scripts"/>
+## `/wsl/.astra_scripts`<span id=".astra_scripts"/>
 A collection of utilities.
 
 Automatically loaded at the startup of a bash.
@@ -23,7 +23,7 @@ Copy `/wsl/.astra_scripts` to `~/`, or create a soft link in `~/` pointing to it
 Call `astrahelp` for a comprehensive list of available commands.
 
 
-## `/python`
+# `/python`
 
 A collection of <s>Mutated</s> Python modules. Source [`/wsl/.astra_scripts`](#.astra_scripts) to incorporate this folder for imports.
 
@@ -55,7 +55,7 @@ e_ = next(primal_attack(65537, A, b, 2))
 assert err_oracle(e_, 2) and e == e_
 ```
 
-### `astrautils`
+## `astrautils`
 
 | Module | Description |
 | ------ | ----------- |
