@@ -3,7 +3,7 @@ os.environ['TERM'] = 'xterm'
 
 from pwn import *
 from time import sleep
-from pow.powsolver import PoWSolver
+from lazypow.powsolver import PoWSolver
 powsolver = Powsolver = PoWSolver
 from astrautils.lite import *
 

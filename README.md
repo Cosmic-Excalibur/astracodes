@@ -25,7 +25,7 @@ Call `astrahelp` for a comprehensive list of available commands.
 
 # `/python`
 
-A collection of <s>Mutated</s> Python modules. Source [`/wsl/.astra_scripts`](#.astra_scripts) to incorporate this folder for imports.
+A collection of Python scripts. Source [`/wsl/.astra_scripts`](#.astra_scripts) to incorporate this folder for imports.
 
 A [SageMath 10.4](https://doc.sagemath.org/html/en/installation/index.html#windows) environment named `sage104` in conda is required.
 
@@ -33,7 +33,7 @@ A list of required external modules can be found in `/python/requirements.txt`.
 
 Run `from astrautils.lazy import *` (slow!) to pre-import some frequently used modules.
 
-You will notice that some of these are condensations or abbreviations of Python codes, for example, you may rewrite
+You will notice that some of these are condensations or abbreviations of Python scripts, for example, you may rewrite
 ```python
 import string
 printable = string.printable[:-6].encode('utf-8')

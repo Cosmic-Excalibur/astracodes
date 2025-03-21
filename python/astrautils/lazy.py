@@ -15,7 +15,7 @@ import sys
 _import_cnt = 0
 
 with Progress() as _progress:
-    _startup_task = _progress.add_task("Preparing...", total = 1756)
+    _startup_task = _progress.add_task("Preparing...", total = 1782)
     class _Watcher:
         @classmethod
         def find_module(cls, name, path, target = None):
@@ -79,6 +79,7 @@ with Progress() as _progress:
     from lazycrypto.lattice.lll_cvp import *
     from lazycrypto.lattice.primal_attack import primal_attack
     from lazycrypto.lattice.small_roots import small_roots
+    from lazycrypto.rsa.lazydecrypt import *
     
     from lazymath import babydiop
     from lazymath.graycode import *
@@ -88,7 +89,7 @@ with Progress() as _progress:
     from lazypwn import *
     restore('log')
     
-    from pow.powsolver import PoWSolver
+    from lazypow.powsolver import PoWSolver
     powsolver = Powsolver = PoWSolver
     
     from astrautils.all import *
