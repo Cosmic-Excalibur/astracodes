@@ -1,10 +1,10 @@
 def int_decode_strip(s, base = 10, encoding = 'utf-8', errors = 'strict', chars = None):
-    return int(s.decode(encoding = encoding, errors = errors).strip(chars = chars), base = base)
+    return int(s.decode(encoding = encoding, errors = errors).strip(chars), base = base)
 
 intsd = intds = int_strip_decode = int_decode_strip
 
 def int0_decode_strip(s, encoding = 'utf-8', errors = 'strict', chars = None):
-    return int(s.decode(encoding = encoding, errors = errors).strip(chars = chars), base = 0)
+    return int(s.decode(encoding = encoding, errors = errors).strip(chars), base = 0)
 
 int0sd = int0ds = int0_strip_decode = int0_decode_strip
 

@@ -31,8 +31,6 @@ with Progress() as _progress:
     from sage.rings.number_field.order_ideal import NumberFieldOrderIdeal
     var('x')
 
-    from sage.all import load
-
     from Crypto.Util.number import *
     from Crypto.Cipher import AES, DES, DES3, ARC4
     from Crypto.Util.Padding import pad, unpad
@@ -88,6 +86,8 @@ with Progress() as _progress:
     
     from lazypwn import *
     restore('log')
+    restore('load')
+    restore('save')
     
     from lazypow.powsolver import PoWSolver
     powsolver = Powsolver = PoWSolver

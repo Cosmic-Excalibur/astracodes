@@ -46,9 +46,10 @@ def _peek_print(needle: str, haystack: str, vision = 10, atom_needle = False, po
             if bound: res += endleft
         if i+l+vision < L:
             right = haystack[i+l:i+l+vision]
-            if bound: right += endright
+            if bound: right += ell
         else:
             right = haystack[i+l:]
+            if bound: right += endright
         res += left
         res += colored_needle
         res += right

@@ -1,4 +1,4 @@
-from sage.all import ZZ, QQ, polygens, Sequence, Polynomial
+from sage.all import ZZ, QQ, polygens, Sequence, Polynomial, prod
 from lazycrypto.lattice.lll_cvp import reduction
 import itertools
 

@@ -72,7 +72,7 @@ assert err_oracle(e_, 2) and e == e_
 | lazy | (Maybe) frequently used stuff in Python and even Sage, so quite a lot :\) |
 | lite | Lightweight version of `astrautils.all`. |
 | path | OS path handling. |
-| peek | Find a needle in a haystack :\) |
+| peek | Simplest version of `grep`. Find a needle in a haystack :\) |
 | prgen | Short for Polynomial Ring GENerators. |
 | printname | Printing both variable names and values. One shot for all. |
 | shuffled | -ed version of `random.shuffle` just like `sorted` and `sort`. |
