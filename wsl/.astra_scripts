@@ -88,9 +88,9 @@ checklibc() {
     strings $libcpath | grep " GLIBC"
 }
 
-__NEW_FUNC checklibc "get the version of a libc." "[libcpath=./libc.so.6]"
+__NEW_FUNC checklibc "get the version of a glibc." "[libcpath=./libc.so.6]"
 
-patchelfnow() {
+patchelfpwn() {
     local arg origlib newlib ld elf
     set -- `getopt -o f:t:i: -l from:,to:,ld: -n $FUNCNAME -- "$@"`
     origlib="libc.so.6"
@@ -120,17 +120,15 @@ patchelfnow() {
     
     if [ ! "$1" ]
     then
-        echo "$FUNCNAME: Missing elf." >& 2
-        echo
-        astrahelp $FUNCNAME
-        return 1
+        elf=./pwn
+    else
+        eval elf=$1
     fi
-    eval elf=$1
     
-    patchelf --replace-needed $origlib $newlib --set-interpreter $ld $elf
+    patchelf --replace-needed "$origlib" "$newlib" --set-interpreter "$ld" "$elf"
 }
 
-__NEW_FUNC patchelfnow "conveniently patchelf!" "[-f/--from original_lib=libc.so.6] [-t/--to new_lib=./libc.so.6] [-i/--ld interpreter=./ld-linux-x86-64.so.2] <elf>"
+__NEW_FUNC patchelfpwn "conveniently patchelf!" "[-f/--from original_libc=libc.so.6] [-t/--to new_libc=./libc.so.6] [-i/--ld interpreter=./ld-linux-x86-64.so.2] [elf=./pwn]"
 
 __NEW_ALIAS sage104i "conda activate sage104 && sage"
 
