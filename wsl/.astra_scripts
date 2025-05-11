@@ -164,9 +164,35 @@ export sageipython
 
 cdwin() {
     local path
-    path2=$(python -c "path=r'''$@''';exec('''from astrautils.path import *\\nprint(twwa(path))''',globals())")
-    cd "$path2"
+    if [ ! "$1" ]
+    then
+        echo "$FUNCNAME: Missing path." >& 2
+        echo
+        astrahelp $FUNCNAME
+        return 1
+    fi
+    path=$(python -c "path=r'''$@''';exec('''from astrautils.path import *\\nprint(twwa(path))''',globals())")
+    cd "$path"
 }
+
+twwa() {
+    local path
+    if [ ! "$1" ]
+    then
+        echo "$FUNCNAME: Missing path." >& 2
+        echo
+        astrahelp $FUNCNAME
+        return 1
+    fi
+    path=$(python -c "path=r'''$@''';exec('''from astrautils.path import *\\nprint(twwa(path))''',globals())")
+    echo "$path"
+}
+
+__NEW_FUNC cdwin "cd to a absolute Windows path." "<windows_path>"
+
+__NEW_FUNC twwa "convert an absolute Windows path to absolute WSL path, or vice versa." "<windows_path>"
+
+__NEW_ALIAS toggle-win-wsl-abspath "twwa"
 
 
 
