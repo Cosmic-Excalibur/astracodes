@@ -26,9 +26,11 @@ class IOCTX:
             'debug_if_remote': False,
             'kernel_base': 0xffffffff81000000,
         }
-    def __call__(self, target_path = None, **kwargs):
-        if target_path is not None:
-            self.argv = [target_path]
+    def __call__(self, target = None, libc_path = None, **kwargs):
+        if target is not None:
+            self.argv = list(target) if isinstance(target, (list, tuple)) else [target]
+        if libc_path is not None:
+            self.libc_path = libc_path
         for k, v in kwargs.items():
             self[k] = v
         return self
@@ -70,6 +72,18 @@ def logleveldebug():
 def loglevelinfo():
     loglevel('info')
 
+def loglevelwarn():
+    loglevel('warn')
+
+def loglevelwarning():
+    loglevel('warning')
+
+def loglevelcritical():
+    loglevel('critical')
+
+def loglevelnotset():
+    loglevel('notset')
+
 def loglevelerror():
     loglevel('error')
 
@@ -97,16 +111,16 @@ getio = get_io
 
 def get_elf(elf_path = None, libc_path = None, elf_checksec = False, libc_checksec = False):
     frame = sys._getframe(1)
-    elf_path = elf_path if elf_path is not None else ioctx.argv[0]
+    elf_path = elf_path if elf_path is not None else (ioctx.argv[0] if ioctx.argv else None)
     if elf_path is None:
         warn("get_elf: ELF path not specified.")
     else:
-        frame.f_globals[io.elf_name] = ioctx.elf = ELF(path = elf_path, checksec = elf_checksec)
+        frame.f_globals[ioctx.elf_name] = ioctx.elf = ELF(path = elf_path, checksec = elf_checksec)
     libc_path = libc_path if libc_path is not None else ioctx.libc_path
     if libc_path is None:
         warn("get_elf: Libc path not specified.")
     else:
-        frame.f_globals[io.libc_name] = ioctx.libc = ELF(path = libc_path, checksec = libc_checksec)
+        frame.f_globals[ioctx.libc_name] = ioctx.libc = ELF(path = libc_path, checksec = libc_checksec)
     return ioctx.elf, ioctx.libc
 
 getelf = get_elf
