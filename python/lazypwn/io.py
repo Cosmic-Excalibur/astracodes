@@ -25,6 +25,7 @@ class IOCTX:
             'first_debug': True,
             'debug_if_remote': False,
             'kernel_base': 0xffffffff81000000,
+            'heap_base': None
         }
     def __call__(self, target = None, libc_path = None, **kwargs):
         if target is not None:
@@ -142,9 +143,60 @@ uu16 = u16lsb = lambda b, *args, **kwargs: u16(b.ljust(2, b'\0'))
 uu32 = u32lsb = lambda b, *args, **kwargs: u32(b.ljust(4, b'\0'))
 uu64 = u64lsb = lambda b, *args, **kwargs: u64(b.ljust(8, b'\0'))
 
+class LoggerBeforeDebugger:
+    def __init__(self):
+        self.messages = []
+    def queue(self, log_func, *args, **kwargs):
+        self.messages.append((log_func, args, kwargs))
+        return self
+    def __next__(self):
+        if not self.messages:
+            raise StopIteration()
+        log_func, args, kwargs = self.messages.pop(0)
+        log_func(*args, **kwargs)
+        return self
+    def __iter__(self):
+        return self
+    def flush(self):
+        for _ in self:
+            pass
+        return self
+    def apply(self, index):
+        log_func, args, kwargs = self.messages[index]
+        log_func(*args, **kwargs)
+        return self
+
+logger_before_debugger = LoggerBeforeDebugger()
+
+def set_heap_base(heap_base, heap_base_var_name = 'heap_base'):
+    frame = sys._getframe(1)
+    frame.f_globals[heap_base_var_name] = ioctx.heap_base = heap_base
+    logger_before_debugger.queue(success, '%s = %#x', heap_base_var_name, heap_base).apply(-1)
+    if heap_base & 0xfff:
+        logger_before_debugger.queue(warn, '%s (%#x) is not aligned to one page.', heap_base_var_name, heap_base).apply(-1)
+
+def set_libc_base(libc_base, libc_base_var_name = 'libc_base'):
+    frame = sys._getframe(1)
+    frame.f_globals[libc_base_var_name] = libc_base
+    if ioctx.libc:
+        ioctx.libc.address = libc_base
+    logger_before_debugger.queue(success, '%s = %#x', libc_base_var_name, libc_base).apply(-1)
+    if libc_base & 0xfff:
+        logger_before_debugger.queue(warn, '%s (%#x) is not aligned to one page.', libc_base_var_name, libc_base).apply(-1)
+
+def set_pie_base(pie_base, pie_base_var_name = 'pie'):
+    frame = sys._getframe(1)
+    frame.f_globals[pie_base_var_name] = pie_base
+    if ioctx.elf:
+        ioctx.elf.address = pie_base
+    logger_before_debugger.queue(success, '%s = %#x', pie_base_var_name, pie_base).apply(-1)
+    if pie_base & 0xfff:
+        logger_before_debugger.queue(warn, '%s (%#x) is not aligned to one page.', pie_base_var_name, pie_base).apply(-1)
+
 def dbg(*args, pausing = False, **kwargs):
     if not ioctx.debugging: return
     if ioctx.first_debug:
+        logger_before_debugger.flush()
         gdb.attach(ioctx.io, *args, **kwargs)
         ioctx.first_debug = False
     if pausing or ioctx.pausing:
