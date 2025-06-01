@@ -198,7 +198,7 @@ if [ ! $__SAGE104_FLAG ]
 then
     echo -e "[\x1b[34;1m*\x1b[0m] Activating environment \"\x1b[33;1msage104\x1b[0m\"".
     sage104
-    __SAGE104_FLAG=ok
+    export __SAGE104_FLAG=ok
 fi
 
 

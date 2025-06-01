@@ -46,3 +46,7 @@ def rstrip_word(text: [bytes, bytearray], word: [bytes, bytearray]):
 
 def print_no_prompt(text: str, prompts = ["sage: ", "....: ", ">>> ", "... "]):
     print('\n'.join(reduce(lambda a, b: lstrip_word(a, b), prompts, line) for line in text.splitlines()))
+
+se = lambda x, *args, **kwargs: str(x).encode(*args, **kwargs)
+
+

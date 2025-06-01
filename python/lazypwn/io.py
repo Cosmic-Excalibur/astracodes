@@ -12,15 +12,19 @@ context(os = 'linux', arch = 'amd64', log_level = 'debug')
 class IOCTX:
     def __init__(self):
         self._state = {
-            'ioname': 'r',
+            'io_name': 'r',
             'io': None,
             'argv': None,
-            'elfname': 'elf',
+            'elf_name': 'elf',
             'elf': None,
+            'libc_name': 'libc',
+            'libc': None,
+            'libc_path': None,
             'debugging': True,
             'pausing': True,
             'first_debug': True,
-            'debug_if_remote': False
+            'debug_if_remote': False,
+            'kernel_base': 0xffffffff81000000,
         }
     def __call__(self, target_path = None, **kwargs):
         if target_path is not None:
@@ -73,8 +77,8 @@ def get_io(conn_creator, *args, **kwargs):
     frame = sys._getframe(1)
     ioctx.first_debug = True
     def _assign(x):
-        frame.f_globals[ioctx.ioname] = ioctx.io = x
-        return ioctx.io
+        frame.f_globals[ioctx.io_name] = ioctx.io = x
+        return x
     if conn_creator is remote:
         if not ioctx.debug_if_remote:
             ioctx.debugging = False
@@ -91,14 +95,19 @@ def get_io(conn_creator, *args, **kwargs):
 
 getio = get_io
 
-def get_elf(path = None, checksec = False):
-    path = path if path is not None else ioctx.argv[0]
-    if path is None: return
+def get_elf(elf_path = None, libc_path = None, elf_checksec = False, libc_checksec = False):
     frame = sys._getframe(1)
-    def _assign(x):
-        frame.f_globals[ioctx.elfname] = ioctx.elf = x
-        return ioctx.io
-    return _assign(ELF(path = path, checksec = checksec))
+    elf_path = elf_path if elf_path is not None else ioctx.argv[0]
+    if elf_path is None:
+        warn("get_elf: ELF path not specified.")
+    else:
+        frame.f_globals[io.elf_name] = ioctx.elf = ELF(path = elf_path, checksec = elf_checksec)
+    libc_path = libc_path if libc_path is not None else ioctx.libc_path
+    if libc_path is None:
+        warn("get_elf: Libc path not specified.")
+    else:
+        frame.f_globals[io.libc_name] = ioctx.libc = ELF(path = libc_path, checksec = libc_checksec)
+    return ioctx.elf, ioctx.libc
 
 getelf = get_elf
 
@@ -110,10 +119,14 @@ sendlineafter = sla   = lambda *args, **kwargs: ioctx.io.sendlineafter(*args, **
 sendafter     = sa    = lambda *args, **kwargs: ioctx.io.sendafter(*args, **kwargs)
 recvuntil     = ru    = lambda *args, **kwargs: ioctx.io.recvuntil(*args, **kwargs)
 recvline      = rl    = lambda *args, **kwargs: ioctx.io.recvline(*args, **kwargs)
+interact      = itr   = lambda *args, **kwargs: ioctx.io.interactive(*args, **kwargs)
 recvafter     = ra    = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recv(*args, **kwargs))[1]
 recvlineafter = rla   = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recvline(*args, **kwargs))[1]
 
-se = lambda x, *args, **kwargs: str(x).encode(*args, **kwargs)
+uu8  = u8lsb  = lambda b, *args, **kwargs: u8(b.ljust(1, b'\0'))
+uu16 = u16lsb = lambda b, *args, **kwargs: u16(b.ljust(2, b'\0'))
+uu32 = u32lsb = lambda b, *args, **kwargs: u32(b.ljust(4, b'\0'))
+uu64 = u64lsb = lambda b, *args, **kwargs: u64(b.ljust(8, b'\0'))
 
 def dbg(*args, pausing = False, **kwargs):
     if not ioctx.debugging: return
@@ -140,4 +153,10 @@ def hack_ptr(ptr, delta = 0):
     ptr ^= ptr   >> 48
     return ptr
 
+def kernel_rebase(addr, base = None, old_base = 0xffffffff81000000):
+    if base is None: base = ioctx.kernel_base
+    return addr - old_base + base
 
+def kernel_rebase_static(addr, base = None, static_base = 0xffffffff81000000):
+    if base is None: base = ioctx.kernel_rebase
+    return addr - base + static_base
