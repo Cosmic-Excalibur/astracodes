@@ -100,7 +100,7 @@ def get_io(conn_creator, *args, **kwargs):
         if len(args) >= 1 and isinstance(args[0], (str, bytes, bytearray)) and ':' in args[0]:
             host, port = args[0].split(':')
             return _assign(conn_creator(host, int(port), **kwargs))
-    elif conn_creator is process:
+    elif conn_creator is process or conn_creator is gdb.debug:
         if 'argv' not in kwargs and len(args) == 0:
             if ioctx.argv is not None:
                 return _assign(conn_creator(ioctx.argv))
@@ -126,17 +126,21 @@ def get_elf(elf_path = None, libc_path = None, elf_checksec = False, libc_checks
 
 getelf = get_elf
 
-send                  = lambda *args, **kwargs: ioctx.io.send(*args, **kwargs)
-recv                  = lambda *args, **kwargs: ioctx.io.recv(*args, **kwargs)
-interact      = inter = lambda *args, **kwargs: ioctx.io.interactive(*args, **kwargs)
-sendline      = sl    = lambda *args, **kwargs: ioctx.io.sendline(*args, **kwargs)
-sendlineafter = sla   = lambda *args, **kwargs: ioctx.io.sendlineafter(*args, **kwargs)
-sendafter     = sa    = lambda *args, **kwargs: ioctx.io.sendafter(*args, **kwargs)
-recvuntil     = ru    = lambda *args, **kwargs: ioctx.io.recvuntil(*args, **kwargs)
-recvline      = rl    = lambda *args, **kwargs: ioctx.io.recvline(*args, **kwargs)
-interact      = itr   = lambda *args, **kwargs: ioctx.io.interactive(*args, **kwargs)
-recvafter     = ra    = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recv(*args, **kwargs))[1]
-recvlineafter = rla   = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recvline(*args, **kwargs))[1]
+send              = s    = lambda *args, **kwargs: ioctx.io.send(*args, **kwargs)
+recv              = r    = lambda *args, **kwargs: ioctx.io.recv(*args, **kwargs)
+interact  = inter = itr  = lambda *args, **kwargs: ioctx.io.interactive(*args, **kwargs)
+sendline          = sl   = lambda *args, **kwargs: ioctx.io.sendline(*args, **kwargs)
+sendlineafter     = sla  = lambda *args, **kwargs: ioctx.io.sendlineafter(*args, **kwargs)
+sendafter         = sa   = lambda *args, **kwargs: ioctx.io.sendafter(*args, **kwargs)
+recvuntil         = ru   = lambda *args, **kwargs: ioctx.io.recvuntil(*args, **kwargs)
+recvuntildrop     = rud  = lambda *args, **kwargs: ioctx.io.recvuntil(*args, drop = True, **kwargs)
+recvline          = rl   = lambda *args, **kwargs: ioctx.io.recvline(*args, **kwargs)
+recvlinedrop      = rld  = lambda *args, **kwargs: ioctx.io.recvline(*args, keepends = False, **kwargs)
+recvafter         = ra   = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recv(*args, **kwargs))[1]
+recvlineafter     = rla  = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recvline(*args, **kwargs))[1]
+recvlinedropafter = rlda = lambda delims, *args, **kwargs: (ioctx.io.recvuntil(delims), ioctx.io.recvline(*args, keepends = False, **kwargs))[1]
+recvbetween       = rb   = lambda delims1, delims2, *args, **kwargs: (ioctx.io.recvuntil(delims1, *args, **kwargs), ioctx.io.recvuntil(delims2, *args, **kwargs))[1]
+recvbetweendrop   = rbd  = lambda delims1, delims2, *args, **kwargs: (ioctx.io.recvuntil(delims1, *args, **kwargs), ioctx.io.recvuntil(delims2, drop = True, *args, **kwargs))[1]
 
 uu8  = u8lsb  = lambda b, *args, **kwargs: u8(b.ljust(1, b'\0'))
 uu16 = u16lsb = lambda b, *args, **kwargs: u16(b.ljust(2, b'\0'))
@@ -166,7 +170,7 @@ class LoggerBeforeDebugger:
         log_func(*args, **kwargs)
         return self
 
-logger_before_debugger = LoggerBeforeDebugger()
+lbd = logger_before_debugger = LoggerBeforeDebugger()
 
 def set_heap_base(heap_base, heap_base_var_name = 'heap_base'):
     frame = sys._getframe(1)
