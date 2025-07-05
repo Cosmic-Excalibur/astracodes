@@ -192,6 +192,17 @@ __NEW_FUNC twwa "convert an absolute Windows path to absolute WSL path, or vice 
 
 __NEW_ALIAS toggle-win-wsl-abspath "twwa"
 
+dockerrmall() {
+    local prompt
+    echo -n "Are you sure you want to forcibly remove all docker containers? [y/N] "
+    read prompt
+    if [ "$prompt" = "y" ] || [ "$prompt" = "Y" ]
+    then
+        sudo docker ps -a | cut -f1 -d' ' | tail -n +2 | xargs -I {} sudo docker rm -f {}
+    fi
+}
+
+__NEW_FUNC dockerrmall "forcibly remove all docker containers."
 
 
 if [ ! $__SAGE104_FLAG ]

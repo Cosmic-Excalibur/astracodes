@@ -80,7 +80,7 @@ class CachedPwnlibAsmContext:
     @LocalContext
     def asm(self, asmcodes, cached_data, reload):
         if reload: self.reload()
-        asmcodes_ = asmcodes.strip()
+        asmcodes_ = asmcodes
         key = self._serialize(asmcodes_)
         if cached_data:
             res = self.assembler.get(key, None)
@@ -107,7 +107,7 @@ class CachedPwnlibAsmContext:
             res = None
         if res is None:
             asmcodes = pwnlib_disasm(mcodes)
-            asmcodes_ = asmcodes.strip()
+            asmcodes_ = asmcodes
             mkey = self._serialize(asmcodes_)
             self.assembler.update({mkey: mcodes_})
             self.disassembler.update({key: asmcodes_})

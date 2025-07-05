@@ -9,9 +9,24 @@ def int0_decode_strip(s, encoding = 'utf-8', errors = 'strict', chars = None):
 int0sd = int0ds = int0_strip_decode = int0_decode_strip
 
 def nbits(n):
-    return n.bit_length()
+    b, m = is_int_int(n)
+    assert b
+    return m.bit_length()
 
 def bit_count(n):
-    return n.bit_count()
+    b, m = is_int_int(n)
+    assert b
+    return m.bit_count()
 
 bitcount = bit_count
+bit_length = bitlength = nbits
+
+def is_int(n):
+    return hasattr(n, '__int__') and int(n) == n
+
+def is_int_int(n):
+    if not hasattr(n, '__int__'):
+        return False, None
+    else:
+        m = int(n)
+        return n == m, m

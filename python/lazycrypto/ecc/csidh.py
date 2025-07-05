@@ -1,8 +1,11 @@
-from sage.all import primes, prod, GF, EllipticCurve, pari, factor, ZZ
+from sage.all import primes, prod, GF, EllipticCurve, pari, factor, ZZ, matrix, pari, sage, discrete_log
 from Crypto.Util.number import isPrime
 from lazymath.graycode import gray_code_int
 from astrautils.filter import filter_digits, map_relu
 from collections import namedtuple
+from logger import astra_logger as alg
+from astrautils.int import is_int_int
+from lazycrypto.lattice.lll_cvp import reduction
 import os, pickle
 
 ells_374_587 = [*primes(3, 374), 587]
@@ -236,3 +239,58 @@ def save_csidh_data(p, ells, class_number, conductor, dlogs, gen_ell, loops):
         'loops': tuple(loops)
     }
     pickle.dump(data, open(path, "wb"))
+
+def calc_csidh_data(csidh: CSIDH, conductor = 2, flag = 0, tech = None, precision = 0, elkies_first = True, kannan_embedding = None, show_rank = True):
+    b, f = is_int_int(conductor)
+    assert b and f > 0
+    d = -f**2 * csidh.p
+    alg.info(f"Computing class group of a quadratic order of discriminant {d}.")
+    no, cyc, gen, reg = pari.quadclassunit(d, flag = flag, tech = tech, precision = precision)
+    no = ZZ(no)
+    if reg != 1 or len(cyc) != 1 or len(gen) != 1:
+        alg.bad("Malformed class group.", f"{no = }", f"{cyc = }", f"{gen = }", f"{reg = }")
+        raise ValueError(f"Malformed class group. {no = }, {cyc = }, {gen = }, {reg = }")
+    alg.info("Found class group.", f"{no = }", f"{cyc = }", f"{gen = }", f"{reg = }")
+    g = gen[0]
+    facs = factor(no)
+    alg.info(f"{no} = {facs}")
+    if elkies_first and gen[0][0] not in csidh.ells:
+        q0 = gen[0]**0
+        for ell in csidh.ells:
+            q = csidh.qfb(ell, conductor = f)
+            for fac, e in facs:
+                if q**(no//fac) == q0:
+                    break
+            else:
+                g = q
+                break
+        alg.info(f"Using generator {g = }.")
+    dlogs = []
+    alg.info("Computing discrete logs.")
+    for ell in csidh.ells:
+        q = csidh.qfb(ell, conductor = f)
+        default_n_factor_to_list = sage.rings.integer.n_factor_to_list
+        sage.rings.integer.n_factor_to_list = lambda x, y: default_n_factor_to_list(x, y) if x != no else list(facs)
+        try:
+            dlog = discrete_log(q, g, no, operation = None, identity = g**0, inverse = lambda x: x**-1, op = lambda a, b: a*b)
+        except Exception as e:
+            sage.rings.integer.n_factor_to_list = default_n_factor_to_list
+            raise e
+        sage.rings.integer.n_factor_to_list = default_n_factor_to_list
+        dlogs.append(dlog)
+        alg.info(f"{q} == {g}^{dlog}")
+    L = matrix(len(csidh.ells) + 1)
+    embedding = kannan_embedding if kannan_embedding is not None else no
+    L[0,0] = no
+    for i, (ell, dlog) in enumerate(zip(csidh.ells, dlogs)):
+        L[i+1,0] = dlog
+        L[i+1,i+1] = 1
+    L[:,0] *= embedding
+    L_ = reduction(L)
+    relation_lattice = []
+    for row in L_:
+        if row[0] == 0:
+            relation_lattice.append(tuple(row[1:]))
+    if show_rank:
+        alg.info(f"Rank of the relation lattice: {matrix(relation_lattice).rank()}")
+    save_csidh_data(csidh.p, csidh.ells, no, f, dlogs, g[0], relation_lattice)

@@ -71,6 +71,7 @@ with Progress() as _progress:
     
     import itertools_ex
     
+    from lazycrypto.block import *
     from lazycrypto.ecc.csidh import *
     csidh = CSIDH
     from lazycrypto.lattice.coppersmith import *
