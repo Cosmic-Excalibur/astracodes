@@ -149,7 +149,7 @@ class cutter:
         elif len(indices) == 1:
             if isinstance(indices[0], slice):
                 rng = range(*indices[0].indices(n))
-                for next_ in rng if indices[0].step > 0 else reversed(rng):
+                for next_ in rng if indices[0].step is None or indices[0].step > 0 else reversed(rng):
                     if not self.do_lstrip or next_ > 0:
                         yield self.seq[ptr:next_]
                     ptr = next_
@@ -291,7 +291,7 @@ if __name__ == '__main__':
         assert set(range(*slice_interval(slice_, n))) == set(range(*slice_.indices(n))), ("slice_interval", i, slice_)
     '''
     set_fast_cutter_threshold(0)
-    c = cutter([0,1,2,3,4,5], [6,7,8,9,10], lstrip=0, rstrip=0)
+    c = cutter([0,1,2,3,4,5,6,7,8,9,10], lstrip=0, rstrip=0)
     c._scratch((2,3,1))
     print(c.seq)
     print(c._scratches, end = '\n\n')
