@@ -19,3 +19,6 @@ hexupper_b = hexupper.encode('utf-8')
 hexdigits_b = hexdigits.encode('utf-8')
 punctuation_b = punctuation.encode('utf-8')
 printable_b = printable.encode('utf-8')
+
+base64_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+base64_table_b = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"

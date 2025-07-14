@@ -1,6 +1,7 @@
 from sortedcontainers import SortedDict, SortedList
 from functools import reduce
-from typing import Sequence
+from collections.abc import Sequence
+
 
 def do_slice(slice_, func, n = None, ret_type = list):    # slow
     if n == 0: return ret_type([])
@@ -34,6 +35,7 @@ def do_slice(slice_, func, n = None, ret_type = list):    # slow
             i += step
     return ret_type(res)
 
+
 def slice_interval(slice_, n):
     start, stop, step = slice_.indices(n)
     if step < 0:
@@ -45,40 +47,41 @@ def slice_interval(slice_, n):
     if start >= stop: stop = -1
     return start, stop, step
 
+
 def _floordiv(a, b):
     return a // b
+
 
 def _ceildiv(a, b):
     return (a + b - 1) // b
 
+
 _FAST_CUTTER_THRESHOLD = 1000000
+
 
 def set_fast_cutter_threshold(n):
     global _FAST_CUTTER_THRESHOLD
     _FAST_CUTTER_THRESHOLD = n
 
+
 def get_fast_cutter_threshold():
     return _FAST_CUTTER_THRESHOLD
 
+
 class cutter:
-    def __init__(self, *seq, lstrip = True, rstrip = True):
-        if len(seq) == 0:
-            raise ValueError
-        typ = type(seq[0])
-        if len(seq) == 1:
-            self.seq = seq[0] if issubclass(typ, Sequence) else list(seq[0])
-        else:
-            if not issubclass(typ, Sequence): typ = list
-            self.seq = typ()
-            for s in seq: self.seq += typ(s)
+
+    def __init__(self, seq, lstrip = True, rstrip = True):
+        self.seq = seq
         self._scratches = SortedDict()
         self.do_lstrip = lstrip
         self.do_rstrip = rstrip
+        
     def split(self, indices = None):
         self.refresh()
         if indices is not None:
             return self[indices]
         return iter([self.seq])
+        
     def _scratch(self, range_):
         start1, stop1, step1 = range_
         if start1 >= stop1 or start1 > self.seq.__len__(): return
@@ -109,10 +112,13 @@ class cutter:
         if moreflag:
             tmp.add((step1, stop1))
         self._scratches[start1] = tmp
+        
     def crazydiamond(self):
         self.refresh()
+        
     def refresh(self):
         self._scratches = SortedDict()
+        
     def __getitem__(self, indices):
         self.refresh()
         n = self.seq.__len__() + 1
@@ -134,16 +140,37 @@ class cutter:
                 if indices < 0: indices += n
                 if indices >= 0 and indices < n: self._scratch((indices, indices+1, 1))
         return self._split()
+        
     def _fast_split(self, indices):
         n = self.seq.__len__() + 1
         ptr = 0
-        dummy = list(range(n))
-        for next_ in sorted(reduce(lambda a, b: a | b, (set(dummy[idx]) if isinstance(idx, slice) else set([dummy[idx]]) for idx in indices), set())):
-            if not self.do_lstrip or next_ > 0:
-                yield self.seq[ptr:next_]
-            ptr = next_
-        if not self.do_rstrip or ptr != n-1:
-            yield self.seq[ptr:]
+        if len(indices) == 0:
+            yield self.seq[:]
+        elif len(indices) == 1:
+            if isinstance(indices[0], slice):
+                rng = range(*indices[0].indices(n))
+                for next_ in rng if indices[0].step > 0 else reversed(rng):
+                    if not self.do_lstrip or next_ > 0:
+                        yield self.seq[ptr:next_]
+                    ptr = next_
+                if not self.do_rstrip or ptr != n-1:
+                    yield self.seq[ptr:]
+            else:
+                next_ = indices[0]
+                if not self.do_lstrip or next_ > 0:
+                    yield self.seq[ptr:next_]
+                ptr = next_
+                if not self.do_rstrip or ptr != n-1:
+                    yield self.seq[ptr:]
+        else:
+            dummy = list(range(n))
+            for next_ in sorted(reduce(lambda a, b: a | b, (set(dummy[idx]) if isinstance(idx, slice) else set([dummy[idx]]) for idx in indices), set())):
+                if not self.do_lstrip or next_ > 0:
+                    yield self.seq[ptr:next_]
+                ptr = next_
+            if not self.do_rstrip or ptr != n-1:
+                yield self.seq[ptr:]
+                
     def _split(self):
         state = SortedList()
         keys = list(self._scratches.keys())
@@ -175,10 +202,13 @@ class cutter:
                 state.add([ptr + victim_step, victim_step, victim_stop])
         if (not self.do_rstrip or ptr != n-1) and ptr < n:
             yield self.seq[ptr:]
+            
     def __str__(self):
         return f'cutter({self.seq})'
+        
     def __repr__(self):
         return self.__str__()
+
 
 class long_range:
     def __init__(self, *args, **kwargs):
@@ -236,6 +266,7 @@ class long_range:
         return f'long_range({self.start}, {self.stop}, {self.step})'
     def __subclasshook__(self, *args, **kwargs):
         return self._range.__subclasshook__(*args, **kwargs)
+
 
 if __name__ == '__main__':
     from rich.progress import track

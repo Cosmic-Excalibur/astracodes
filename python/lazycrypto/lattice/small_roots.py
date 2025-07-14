@@ -1,4 +1,4 @@
-from sage.all import ZZ, QQ, polygens, Sequence, Polynomial, prod
+from sage.all import ZZ, QQ, polygens, Sequence, Polynomial, prod, vector
 from lazycrypto.lattice.lll_cvp import reduction
 import itertools
 
@@ -20,7 +20,7 @@ def small_roots(f, bounds, m=1, d=None):
     for i in range(m+1):
         base = N**(m-i) * f**i
         for shifts in itertools.product(range(d), repeat=f.nvariables()):
-            g = base * prod(map(power, f.variables(), shifts))
+            g = base * prod(map(pow, f.variables(), shifts))
             G.append(g)
 
     B, monomials = G.coefficient_matrix()

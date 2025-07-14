@@ -1,6 +1,51 @@
 from astrautils.int import is_int
-from pwn import u32, p32, xor
+from pwn import u8, p8, u16, p16, u32, p32, u64, p64, xor, context
 from os import urandom
+from typing import Sequence
+
+
+def rol(n, k, word_size = None):
+    word_size = word_size or context.word_size
+
+    if not is_int(word_size) or word_size <= 0:
+        raise ValueError("rol(): 'word_size' must be a strictly positive integer")
+
+    if not is_int(k):
+        raise ValueError("rol(): 'k' must be an integer")
+
+    if isinstance(n, (bytes, bytearray, list, tuple)):
+        return n[k % len(n):] + n[:k % len(n)]
+    elif is_int(n):
+        mask = (1 << word_size) - 1
+        k %= word_size
+        n &= mask
+        n = (n << k) | (n >> (word_size - k))
+        n &= mask
+        return n
+    else:
+        raise ValueError("rol(): 'n' must be an integer, string, list or tuple")
+
+def ror(n, k, word_size = None):
+    word_size = word_size or context.word_size
+
+    if not is_int(word_size) or word_size <= 0:
+        raise ValueError("ror(): 'word_size' must be a strictly positive integer")
+
+    if not is_int(k):
+        raise ValueError("ror(): 'k' must be an integer")
+
+    k = -k
+    if isinstance(n, (bytes, bytearray, list, tuple)):
+        return n[k % len(n):] + n[:k % len(n)]
+    elif is_int(n):
+        mask = (1 << word_size) - 1
+        k %= word_size
+        n &= mask
+        n = (n << k) | (n >> (word_size - k))
+        n &= mask
+        return n
+    else:
+        raise ValueError("ror(): 'n' must be an integer, string, list or tuple")
 
 
 class Modes:

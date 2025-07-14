@@ -199,8 +199,8 @@ def set_pie_base(pie_base, pie_base_var_name = 'pie'):
 
 def dbg(*args, pausing = False, **kwargs):
     if not ioctx.debugging: return
+    logger_before_debugger.flush()
     if ioctx.first_debug:
-        logger_before_debugger.flush()
         gdb.attach(ioctx.io, *args, **kwargs)
         ioctx.first_debug = False
     if pausing or ioctx.pausing:

@@ -90,9 +90,9 @@ def auto_reduction(M):
 default_reduction = auto_reduction
 
 
-def set_default_reduction(reduction):
+def set_default_reduction(reduction=None):
     global default_reduction
-    default_reduction = reduction
+    default_reduction = auto_reduction if reduction is None else reduction
 
 
 def reduction(M):
