@@ -64,7 +64,7 @@ class _RC5_block:
             else:
                 raise ValueError(f"Invalid `Pw`.")
         if Qw is None:
-            self.Qw = Qw_table[word_size]
+            self.Qw = Qw_table[self.w]
         else:
             if is_int(Qw):
                 self.Qw = int(Qw)
