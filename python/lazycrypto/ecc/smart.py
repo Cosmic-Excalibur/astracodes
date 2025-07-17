@@ -1,6 +1,8 @@
+from sage.all import is_prime_power, EllipticCurve, Qp, ZZ, randrange, Zmod, Integer
+
 def smarts_attack_dlog(P, Q, l):
     C = P.curve()
-    R = R
+    R = C.base()
     assert C == Q.curve()
     assert R.is_finite()
     
@@ -34,7 +36,7 @@ def smarts_attack_dlog(P, Q, l):
     zP = -P_[0] / P_[1]
     zQ = -Q_[0] / Q_[1]
     
-    k0 = Mod(zQ / zP, p)
+    k0 = (zQ / zP) % p
     known_k = Integer(k0)
     
     for i in range(1, l-1):
@@ -48,7 +50,7 @@ def smarts_attack_dlog(P, Q, l):
         z_Qi = -Q_i_[0] / Q_i_[1]
         z_Pi = -P_i_[0] / P_i_[1]
         
-        ki = Mod(z_Qi / z_Pi, p)
+        ki = (z_Qi / z_Pi) % p
         
         known_k += Integer(ki) * (p**i)
         

@@ -5,7 +5,7 @@ alg = astra_logger
 alg.set_debugging(True)
 set_ticktock_log_func(None)
 
-print(alg.colorify("ASTRAPYTHON -- Good luck coding LALLAALLLALLALALAALLLALLLALALLAAA :3"))
+print(alg.colorify("ASTRAPYTHON -- Some dumbass dialect of Python   :3"))
 ticktock()
 
 from rich.progress import Progress
@@ -74,6 +74,7 @@ with Progress() as _progress:
     from lazycrypto.block import *
     from lazycrypto.ecc.csidh import *
     csidh = CSIDH
+    from lazycrypto.ecc.smart import *
     from lazycrypto.lattice.coppersmith import *
     from lazycrypto.lattice.lll_cvp import *
     from lazycrypto.lattice.primal_attack import primal_attack
@@ -131,7 +132,7 @@ def astrapython_banner():
 
 
 
-Astrageldon's personal python :3
+Python Dialect :3
 
 
 """))
